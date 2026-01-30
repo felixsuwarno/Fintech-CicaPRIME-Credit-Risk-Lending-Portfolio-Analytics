@@ -27,6 +27,8 @@ Consumer lending analytics and KPI design, credit portfolio performance analysis
 
 **(SQL • Python • Pandas • Time-Series Forecasting • Credit Risk Metrics • Executive-Ready Analysis)**
 
+<br>
+
 ➤ **Core Business Questions:**
 
 **1 — Forecasting & Financial Planning**
@@ -35,3 +37,35 @@ Consumer lending analytics and KPI design, credit portfolio performance analysis
 2. **Cash inflows vs contractual expectations** <br> How do actual monthly cash collections compare to scheduled payments from 2023–2025, and how reliable are collection gaps across these 36 months?
 3. **Delinquency & default trends** <br> How have delinquency and default rates evolved, and what do these trends indicate about portfolio credit health?
 4. **Budget vs actual performance** <br> How reliable is financial planning given deviations between budgeted and realized revenue, cash inflows, and losses?
+
+**2 — Borrower Activation, Churn & Value**
+
+1. **Customer activation timing** <br> How long does it take newly acquired customers to originate their first loan?
+2. **Borrower inactivity & churn risk** <br> Which customers are most likely to stop borrowing after their initial loan?
+3. **Customer lifetime value (LTV)** <br> Which customers are expected to generate the highest lifetime value after accounting for credit losses?
+4. **Value concentration** <br> How concentrated is customer value, and how dependent is portfolio performance on top-value segments?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
