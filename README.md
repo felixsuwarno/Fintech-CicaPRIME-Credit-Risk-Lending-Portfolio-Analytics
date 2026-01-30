@@ -33,3 +33,5 @@ Consumer lending analytics and KPI design, credit portfolio performance analysis
 
 - **Revenue performance & outlook** : How did monthly interest and fee revenue perform from 2023–2025, and what is the expected revenue trajectory over the next 12 months?
 - **Cash inflows vs contractual expectations** : How do actual monthly cash collections compare to scheduled payments from 2023–2025, and how reliable are collection gaps across these 36 months?
+- **Delinquency & default trends** : How have delinquency and default rates evolved, and what do these trends indicate about portfolio credit health?
+- **Budget vs actual performance** : How reliable is financial planning given deviations between budgeted and realized revenue, cash inflows, and losses?
