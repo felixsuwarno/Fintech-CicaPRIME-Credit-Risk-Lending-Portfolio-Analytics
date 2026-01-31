@@ -66,9 +66,7 @@ FOR LATER.
 
 <br><br>
 
-**➤ The Main Report**
-
-**Dataset**
+**➤ The Dataset**
 
 The raw dataset spans January 2023 through December 2025, and all reporting and conclusions in this project are intentionally scoped to this full three-year period to evaluate portfolio growth, seasonality, underwriting changes, and macro-driven risk cycles, while supporting time-series forecasting, predictive modeling, portfolio risk analytics, and stress testing in a consistent analytical framework.
 
@@ -113,7 +111,9 @@ The analysis uses seven core tables representing a consumer installment lending 
 - Calendar spine to help with time series modeling.
 - This is an additional "tool" to help with the calculation. Not data in itself.
 
+<br><br>
 
+##➤ The Main Report - Key Questions Answered##
 
 
 
