@@ -54,7 +54,9 @@ Consumer lending analytics and KPI design, credit portfolio performance analysis
 5. **Credit policy & decision thresholds** <br> Where should approval, review, and rejection thresholds be set based on predicted default risk?
 6. **Model monitoring & governance** <br> How stable and well-calibrated are credit risk models over time?
 
+**4 — Portfolio Fragility & Stress Testing**
 
+1. **Macro stress & portfolio survival ** <br> Under adverse macroeconomic scenarios, can portfolio revenue absorb stressed credit losses without threatening business viability?
 
 
 
