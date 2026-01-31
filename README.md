@@ -125,17 +125,20 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 - payments
 - dim_month ( the calendar spine )
 
-**Method** <br>
-**- SQL:** <br> 
-	- Filter gross revenue / "paid_fee_interest" , for all "payment_type" labeled 'scheduled' or 'partial'. <br>
-	- Aggregate monthly realized interest and fee revenue using payment_date -> this should be made into year_month configuration. <br>
-	- Left join to a calendar spine to ensure zero-revenue months are included. <br>
-**- Python:** <br>
-	- Load the monthly revenue output from SQL and index it by year_month as a monthly time series (.asfreq("MS")). <br>
-	- Run STL decomposition (period=12) and plot the trend/seasonal/residual components to diagnose revenue structure. <br>
-	- Fit the historical monthly revenue series into a seasonal SARIMA model to capture short-term dynamics and yearly seasonality. <br>
-	- Generate a 12-month forecast and extract the forecast table (mean, mean_ci_lower, mean_ci_upper). <br>
-	- Plot actual vs forecast and shade the confidence interval to visually communicate expected trajectory and uncertainty. <br>
+**Method**
+
+**SQL**
+- Filter gross revenue (`paid_fee_interest`) for all `payment_type` labeled `scheduled` or `partial`.
+- Aggregate monthly realized interest and fee revenue using `payment_date`, converted to a `year_month` configuration.
+- Left join to a calendar spine to ensure zero-revenue months are included.
+
+**Python**
+- Load the monthly revenue output from SQL and index it by `year_month` as a monthly time series (`.asfreq("MS")`).
+- Run STL decomposition (`period=12`) and plot the trend, seasonal, and residual components to diagnose revenue structure.
+- Fit the historical monthly revenue series into a seasonal SARIMA model to capture short-term dynamics and yearly seasonality.
+- Generate a 12-month forecast and extract the forecast table (`mean`, `mean_ci_lower`, `mean_ci_upper`).
+- Plot actual vs forecast and shade the confidence interval to visually communicate expected trajectory and uncertainty.
+
 
 
 
