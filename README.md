@@ -137,7 +137,17 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 - Generate a 12-month forecast and extract the forecast table (`mean`, `mean_ci_lower`, `mean_ci_upper`).
 - Plot actual vs forecast and shade the confidence interval to visually communicate expected trajectory and uncertainty.
 
+**Charts**
 
+
+**Key Insights**
+
+- Monthly interest and fee revenue rises steadily from 2023 through 2025, with faster absolute growth in 2024–2025 than in 2023.
+- The revenue trend is smooth and strongly upward, indicating structural growth rather than short-lived spikes.
+- Revenue shows stable annual seasonality, with recurring intra-year patterns that are materially smaller than the underlying growth trend.
+- Residual variation is centered around zero with no persistent structure, suggesting most revenue movement is explained by trend and seasonality.
+- The 12-month SARIMA forecast projects continued month-over-month revenue growth beyond 2025.
+- Forecast uncertainty increases gradually over the horizon, but the lower confidence bound remains well above earlier historical revenue levels.
 
 
 
