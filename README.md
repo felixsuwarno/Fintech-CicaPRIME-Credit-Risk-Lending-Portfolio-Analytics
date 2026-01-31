@@ -9,7 +9,7 @@ The dataset spans January 2023 to December 2025 and includes loan-level, custome
 
 The analysis focuses on risk-aware, finance-aligned analytics, modeling how portfolio growth, repayment behavior, and credit losses are expected to evolve over time under different conditions. The goal is to evaluate portfolio health, revenue sustainability, and downside risk using predictive modeling, time-series forecasting, and scenario-based stress testing, consistent with how consumer lending analytics teams operate in practice.
 
-<br>
+<br><br>
 
 ➤ **Project Goal / Purpose:**  
 
@@ -19,7 +19,7 @@ The project looks at how revenue, cash inflows, delinquency, and defaults are ex
 
 At the portfolio level, the project measures expected credit losses, evaluates how concentrated revenue and risk are across borrowers, and tests how the portfolio would perform under different economic conditions. The goal is to determine whether portfolio growth is supported by sustainable cash flows and manageable credit risk, or whether it relies on elevated risk, loose underwriting, or a small group of borrowers—especially when economic conditions worsen.
 
-<br>
+<br><br>
 
 ➤ **Skills Demonstrated:**  
 
@@ -27,7 +27,7 @@ Consumer lending analytics and KPI design, credit portfolio performance analysis
 
 **(SQL • Python • Pandas • Time-Series Forecasting • Credit Risk Metrics • Executive-Ready Analysis)**
 
-<br>
+<br><br>
 
 ➤ **Core Business Questions:**
 
@@ -58,13 +58,13 @@ Consumer lending analytics and KPI design, credit portfolio performance analysis
 
 1. **Macro stress & portfolio survival** <br> Under adverse macroeconomic scenarios, can portfolio revenue absorb stressed credit losses without threatening business viability?
 
-<br>
+<br><br>
 
 **➤ Executive Summary:**
 WORK IN PROGRESS !!!
 FOR LATER.
 
-<br>
+<br><br>
 
 **➤ The Main Report**
 
