@@ -131,6 +131,7 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 - Filter gross revenue (`paid_fee_interest`) for all `payment_type` labeled `scheduled` or `partial`.
 - Aggregate monthly realized interest and fee revenue using `payment_date`, converted to a `year_month` configuration.
 - Left join to a calendar spine to ensure zero-revenue months are included.
+- SQL Output : a simple table with two columns, year_month and gross_revenue.
 
 **Python Method**
 - Load the monthly revenue output from SQL and index it by `year_month` as a monthly time series (`.asfreq("MS")`).
@@ -138,6 +139,7 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 - Fit the historical monthly revenue series into a seasonal SARIMA model to capture short-term dynamics and yearly seasonality.
 - Generate a 12-month forecast and extract the forecast table (`mean`, `mean_ci_lower`, `mean_ci_upper`).
 - Plot actual vs forecast and shade the confidence interval to visually communicate expected trajectory and uncertainty.
+- Python 
 
 **Charts**
 
@@ -158,7 +160,29 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 - The 12-month forecast expects revenue to keep increasing month by month after 2025.
 - While uncertainty grows further into the future, even conservative estimates remain well above past revenue levels.
 
+<br>
 
+**1.2. Cash Inflows vs Contractual Expectations**
+
+How do actual cash collections compare to scheduled payments on a monthly basis from 2023 through 2025?
+How stable / reliable are monthly collection gaps across this period?
+
+**Tables used**
+- payment_schedule , contractual principal and interest due
+- payments , actual cash collected
+- dim_month ( the calendar spine )
+
+**SQL Method**
+- Filter gross revenue (`paid_fee_interest`) for all `payment_type` labeled `scheduled` or `partial`.
+- Aggregate monthly realized interest and fee revenue using `payment_date`, converted to a `year_month` configuration.
+- Left join to a calendar spine to ensure zero-revenue months are included.
+
+**Python Method**
+- Load the monthly revenue output from SQL and index it by `year_month` as a monthly time series (`.asfreq("MS")`).
+- Run STL decomposition (`period=12`) and plot the trend, seasonal, and residual components to diagnose revenue structure.
+- Fit the historical monthly revenue series into a seasonal SARIMA model to capture short-term dynamics and yearly seasonality.
+- Generate a 12-month forecast and extract the forecast table (`mean`, `mean_ci_lower`, `mean_ci_upper`).
+- Plot actual vs forecast and shade the confidence interval to visually communicate expected trajectory and uncertainty.
 
 
 
