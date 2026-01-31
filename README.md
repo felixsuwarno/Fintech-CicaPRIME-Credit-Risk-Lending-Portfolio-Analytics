@@ -139,6 +139,13 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 
 **Charts**
 
+<p align="center">
+  <img src="images/01_1_revenue_performance_and_outlook_a_STL.png" width="85%">
+</p>
+
+<p align="center">
+  <img src="images/01_1_revenue_performance_and_outlook_b_SARIMAX.png" width="85%">
+</p>
 
 **Key Insights**
 
