@@ -45,7 +45,14 @@ Consumer lending analytics and KPI design, credit portfolio performance analysis
 3. **Customer lifetime value (LTV)** <br> Which customers are expected to generate the highest lifetime value after accounting for credit losses?
 4. **Value concentration** <br> How concentrated is customer value, and how dependent is portfolio performance on top-value segments?
 
+**3 — Credit Risk Modeling & Portfolio Loss Dynamics**
 
+1. **Probability of default (PD)** <br> Which individual loans are most likely to default based on borrower, loan, and early behavior signals?
+2. **Exposure at default (EAD)** <br> How much exposure remains outstanding at the time loans default?
+3. **Loss given default (LGD)** <br> How severe are losses after recoveries, and how do they vary across segments?
+4. **Vintage risk performance** <br> How do cumulative defaults and losses evolve by origination vintage?
+5. **Credit policy & decision thresholds** <br> Where should approval, review, and rejection thresholds be set based on predicted default risk?
+6. **Model monitoring & governance** <br> How stable and well-calibrated are credit risk models over time?
 
 
 
