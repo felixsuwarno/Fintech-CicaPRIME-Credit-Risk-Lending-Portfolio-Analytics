@@ -154,11 +154,11 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 **Key Insights**
 
 - Monthly interest and fee revenue increases steadily from 2023 to 2025, with faster growth in 2024–2025 compared to 2023.
-- Revenue growth is consistent over time and does not rely on one-off spikes.
+- The trend component is smooth and strongly upward across the full period.
 - Revenue follows a predictable yearly pattern, but these seasonal ups and downs are much smaller than the overall growth.
-- Short-term fluctuations are limited and do not show ongoing problems or unusual behavior.
-- The 12-month forecast expects revenue to keep increasing month by month after 2025.
-- While uncertainty grows further into the future, even conservative estimates remain well above past revenue levels.
+- The seasonal component shows a consistent yearly pattern, with revenue tending to be higher toward the end of each year.
+- Seasonal fluctuations are stable over time and materially smaller than the overall growth trend.
+- The 12-month SARIMA forecast shows revenue continuing to rise beyond 2025, with even the conservative (lower-bound) forecast increasing over time.
 
 <br>
 
