@@ -34,7 +34,7 @@ Consumer lending analytics and KPI design, credit portfolio performance analysis
 **1 — Forecasting & Financial Planning**
 
 1. **Revenue performance & outlook** <br> How did monthly interest and fee revenue perform from 2023–2025, and what is the expected revenue trajectory over the next 12 months?
-2. **Cash inflows vs contractual expectations** <br> How do actual monthly cash collections compare to scheduled payments from 2023–2025, and how reliable are collection gaps across these 36 months?
+2. **Cash inflows vs contractual expectations** <br> How do actual monthly cash collections compare to scheduled cash collections from 2023–2025, and what is the resulting monthly collection gap? How large is the monthly collection gap relative to scheduled cash, and how stable is this gap over time?
 3. **Delinquency & default trends** <br> How have delinquency and default rates evolved, and what do these trends indicate about portfolio credit health?
 4. **Budget vs actual performance** <br> How reliable is financial planning given deviations between budgeted and realized revenue, cash inflows, and losses?
 
@@ -187,8 +187,13 @@ How stable / reliable are monthly collection gaps across this period?
 - Summarize the results by reporting the average gap percentage, how much the gap percentage varies from month to month, and how often monthly cash collection is below expectations.
 - Plot the monthly cash gap percentage over time and label each month with its exact value so the chart is easy to read.
 
+<br>
 
+**Charts**
 
+<p align="center">
+  <img src="Charts/01_2_scheduled_vs_actual_cash_flow.png" width="100%">
+</p>
 
 
 
