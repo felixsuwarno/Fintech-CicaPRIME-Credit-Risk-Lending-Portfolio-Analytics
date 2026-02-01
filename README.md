@@ -265,3 +265,11 @@ For the "**actual_loss**":
 <br>
 
 **Python Method :**
+- Load the final monthly table from SQL (one row per year_month).
+- Convert year_month to a monthly datetime index, sort ascending, and confirm there is exactly one row per month.
+- Compute variance columns for each metric (actual_revenue, actual_cash, actual_loss) against both base and stretch budgets, including absolute variance and percent variance (percent only when the budget value is not zero).
+- Validate sign conventions and completeness: loss is “worse when bigger,” and missing budget/actual values are handled consistently (no unexpected nulls).
+- Summarize planning accuracy for each metric and scenario using a small set of error stats (one absolute error measure and one percent error measure).
+- Measure how often actuals beat plan using directionally correct rules: revenue and cash are better when higher; loss is better when lower.
+- Check persistence of misses by looking at variance over time with a rolling average (to separate “one-off” spikes from long-running bias).
+- Produce outputs: a single variance table, a compact accuracy summary table, and 3 time-series charts (variance for revenue, cash, loss) comparing base vs stretch.
