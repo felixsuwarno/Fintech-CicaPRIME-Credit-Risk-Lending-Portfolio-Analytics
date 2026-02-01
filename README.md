@@ -119,7 +119,7 @@ The analysis uses seven core tables representing a consumer installment lending 
 
 <br>
 
-**1.1. Revenue Performance & Outlook**
+#### 1.1. Revenue Performance & Outlook ####
 
 How did total portfolio interest and fee revenue perform on a monthly basis from 2023 through 2025, and what is the expected monthly revenue performance over the next 12 months?
 
