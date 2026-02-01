@@ -139,7 +139,8 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 - Fit the historical monthly revenue series into a seasonal SARIMA model to capture short-term dynamics and yearly seasonality.
 - Generate a 12-month forecast and extract the forecast table (`mean`, `mean_ci_lower`, `mean_ci_upper`).
 - Plot actual vs forecast and shade the confidence interval to visually communicate expected trajectory and uncertainty.
-- Python 
+
+<br>
 
 **Charts**
 
@@ -159,6 +160,7 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 - The seasonal component shows a consistent yearly pattern, with revenue tending to be higher toward the end of each year.
 - Seasonal fluctuations are stable over time and materially smaller than the overall growth trend.
 - The 12-month SARIMA forecast shows revenue continuing to rise beyond 2025, with even the conservative (lower-bound) forecast increasing over time.
+- Forecast uncertainty increases gradually over the horizon, but the lower confidence bound remains well above earlier historical revenue levels.
 
 <br>
 
@@ -173,16 +175,18 @@ How stable / reliable are monthly collection gaps across this period?
 - dim_month ( the calendar spine )
 
 **SQL Method**
-- Filter gross revenue (`paid_fee_interest`) for all `payment_type` labeled `scheduled` or `partial`.
-- Aggregate monthly realized interest and fee revenue using `payment_date`, converted to a `year_month` configuration.
-- Left join to a calendar spine to ensure zero-revenue months are included.
+- Aggregate monthly scheduled cash flows from payment_schedule.
+- Aggregate monthly actual cash flows from payments.
+- Align both series on the same monthly calendar spine.
+- Compute monthly cash collection gaps -> gap amount = actual − scheduled
+- SQL output: one clean monthly table with columns(year_month, scheduled_cash, actual_cash, cash_flow_gap)
 
 **Python Method**
-- Load the monthly revenue output from SQL and index it by `year_month` as a monthly time series (`.asfreq("MS")`).
-- Run STL decomposition (`period=12`) and plot the trend, seasonal, and residual components to diagnose revenue structure.
-- Fit the historical monthly revenue series into a seasonal SARIMA model to capture short-term dynamics and yearly seasonality.
-- Generate a 12-month forecast and extract the forecast table (`mean`, `mean_ci_lower`, `mean_ci_upper`).
-- Plot actual vs forecast and shade the confidence interval to visually communicate expected trajectory and uncertainty.
+- Load the monthly scheduled vs actual cash flow table produced in SQL as a month-level dataframe keyed by year_month.
+- Compute monthly cashflow gap metrics, which include the dollar gap between scheduled and actual cash flows and the gap expressed as a percentage of scheduled cash flow
+- Summarize gap behavior by calculating the average monthly gap, the variability of gaps over time (standard deviation), and the frequency of under-collection months.
+- Analyze persistence of under-collection by identifying consecutive streaks of negative gaps and measuring their length and timing.
+- Assess clustering of under-collection by measuring how many under-collection months occur within multi-month streaks rather than as isolated events.
 
 
 
