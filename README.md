@@ -203,9 +203,31 @@ How stable / reliable are monthly collection gaps across this period?
 - Large negative gaps are uncommon, as most months cluster within a narrow under-collection range.
 - There is no sign of worsening over time, with the size and volatility of gaps remaining broadly stable from 2023 through 2025.
 
+<br><br>
 
+**1.3. Budget vs Actual Performance**
 
+Did actual revenue earned, cash collected, and credit losses differ from what management planned?
 
+<br>
 
+**Tables used**
+- budget_plan_monthly — planned revenue ($), cash inflow ($), net credit loss ($) by month + scenario
+- payments — actual cash received and realized interest+fees
+- loans — default event timing (only for labeling / cohorting if needed)
+- calendar spine
 
+<br>
 
+**SQL Method :**
+- Aggregate monthly actual realized revenue from payments (sum of paid_fee_interest, using payment_date -> year_month, filtering to true customer payments such as scheduled and partial).
+- Aggregate monthly actual cash inflows from payments (sum of payment_amount, using payment_date -> year_month, treating recoveries as positive and refunds as negative so it is net cash).
+- Aggregate monthly actual net credit losses using one consistent rule (use default_date -> year_month to time the write-off, then subtract recovery cash received in the same month).
+- Aggregate monthly budgeted revenue, cash inflows, and losses from budget_plan_monthly by year_month and scenario.
+- Align actuals and budgets on the same monthly calendar spine and join by year_month + scenario.
+- Compute monthly variances for each metric -> variance_abs = actual − budget, variance_pct = (actual − budget) / budget.
+- SQL output: one clean monthly table with columns (year_month, scenario, revenue_actual, revenue_budget, revenue_var_abs, revenue_var_pct, cash_actual, cash_budget, cash_var_abs, cash_var_pct, loss_actual, loss_budget, loss_var_abs, loss_var_pct).
+
+<br>
+
+**Python Method :**
