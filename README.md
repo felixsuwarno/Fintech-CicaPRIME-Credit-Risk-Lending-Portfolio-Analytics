@@ -219,7 +219,7 @@ Did actual revenue earned, cash collected, and credit losses differ from what ma
 
 <br>
 
-**SQL Method :**
+**SQL Method :** <br>
 This work produces two monthly tables that will eventually be joined on year_month, Monthly actuals table and Monthly budget table.
 
 **Monthly Actuals** (what really happened) 
