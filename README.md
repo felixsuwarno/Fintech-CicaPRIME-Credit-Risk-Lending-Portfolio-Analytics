@@ -182,11 +182,11 @@ How stable / reliable are monthly collection gaps across this period?
 - SQL output: one clean monthly table with columns(year_month, scheduled_cash, actual_cash, cash_flow_gap)
 
 **Python Method**
-- Load the monthly scheduled vs actual cash flow table produced in SQL as a month-level dataframe keyed by year_month.
-- Compute monthly cashflow gap metrics, which include the dollar gap between scheduled and actual cash flows and the gap expressed as a percentage of scheduled cash flow
-- Summarize gap behavior by calculating the average monthly gap, the variability of gaps over time (standard deviation), and the frequency of under-collection months.
-- Analyze persistence of under-collection by identifying consecutive streaks of negative gaps and measuring their length and timing.
-- Assess clustering of under-collection by measuring how many under-collection months occur within multi-month streaks rather than as isolated events.
+- Load the monthly table that shows how much money was expected to be paid and how much was actually paid.
+- Calculate the monthly difference between expected and actual payments, and how big that difference is compared to what was expected.
+- Summarize these differences by computing the typical shortfall or surplus, how much the differences vary from month to month, and how often payments fall short.
+- Identify periods where shortfalls happen for several months in a row and record when those periods start, end, and how long they last.
+- Measure whether shortfalls mostly happen on their own or tend to appear in multi-month clusters.
 
 
 
