@@ -311,14 +311,13 @@ budget_stretch_for_loss
 - Variance moves toward zero over time, which implies cash outcomes became more predictable relative to budget.
 - Actual cash remains below the Stretch budget, suggesting upside budget assumptions were aggressive, while the Base budget became a reasonable reference.
 
-<br>
-<br>
+<br><br>
 
 <p align="center">
   <img src="Charts/01_3c_budget_vs_actual_on_credit_loss.png" width="100%">
 </p>
 
-<br>
+<br><br>
 
 **Key Insights**
 
