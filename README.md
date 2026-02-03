@@ -306,6 +306,7 @@ budget_stretch_for_loss
 <p align="center">
   <img src="Charts/01_3b_budget_vs_actual_on_cash.png" width="100%">
 </p>
+
 **Key Insights**
 - Cash collections increase strongly and track much closer to the Base budget, especially in later months, indicating improving alignment between actual collections and budgeted cash.
 - Variance moves toward zero over time, which implies cash outcomes became more predictable relative to budget.
