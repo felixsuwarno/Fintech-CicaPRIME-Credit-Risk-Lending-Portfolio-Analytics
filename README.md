@@ -294,19 +294,24 @@ budget_stretch_for_loss
 <p align="center">
   <img src="Charts/01_3a_budget_vs_actual_on_revenue.png" width="100%">
 </p>
-
 **Key Insights**
-- Actual revenue increases steadily over time.
-- Actual revenue is below both Base and Stretch budgets in nearly every month.
-- The dollar gap between actual revenue and budget grows as the portfolio scales.
-- Revenue shortfall narrows slightly over time but does not close.
 
+- Revenue grows steadily, but remains consistently below both the Base and Stretch budgets, meaning actual growth is slower than budgeted.
+- The dollar shortfall versus budget widens over time as the portfolio scales, so budget gaps become larger in absolute terms.
+- The variance remains negative across most months, indicating revenue consistently underperformed budget expectations, not just in isolated periods.
+
+<br>
 <br>
 
 <p align="center">
   <img src="Charts/01_3b_budget_vs_actual_on_cash.png" width="100%">
 </p>
+**Key Insights**
+- Cash collections increase strongly and track much closer to the Base budget, especially in later months, indicating improving alignment between actual collections and budgeted cash.
+- Variance moves toward zero over time, which implies cash outcomes became more predictable relative to budget.
+- Actual cash remains below the Stretch budget, suggesting upside budget assumptions were aggressive, while the Base budget became a reasonable reference.
 
+<br>
 <br>
 
 <p align="center">
@@ -316,10 +321,10 @@ budget_stretch_for_loss
 <br>
 
 **Key Insights**
-- Collections fall below schedule in most months, with about 86% of months collecting less cash than contractually expected.
-- The typical monthly shortfall is modest and steady, averaging roughly 4–5% below plan.
-- Large negative gaps are uncommon, as most months cluster within a narrow under-collection range.
-- There is no sign of worsening over time, with the size and volatility of gaps remaining broadly stable from 2023 through 2025.
+
+- Credit losses are highly volatile, with repeated overshoots above both Base and Stretch budgets, indicating losses frequently exceeded budgeted levels.
+- Large swings in variance show that loss outcomes are unstable and harder to budget accurately than revenue or cash.
+- The lack of convergence toward budget over time implies credit loss risk remains the least controlled and most uncertain component of performance.
 
 <br><br>
 
