@@ -1,0 +1,25 @@
+-- filter to show only revenue labeled 'scheduled' and 'partial'
+WITH base_table AS
+(
+	SELECT 
+		DATE_TRUNC('month',payment_date)::date AS year_month, 
+		SUM(paid_fee_interest) as gross_revenue
+	FROM payments
+	WHERE payment_type IN ('scheduled','partial')
+	GROUP BY DATE_TRUNC('month',payment_date)::date
+),
+
+-- join base_table with the calendar spine properly
+gross_revenue AS
+(
+	SELECT 
+		dm.month_start AS year_month, 
+		COALESCE(bt.gross_revenue, 0) AS gross_revenue
+	FROM dim_month dm
+	LEFT JOIN base_table bt
+	ON dm.month_start = bt.year_month
+)
+
+SELECT *
+FROM gross_revenue
+ORDER BY year_month ASC

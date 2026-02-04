@@ -1,0 +1,53 @@
+WITH agg_payment_schedule AS
+(
+	SELECT
+		DATE_TRUNC('month',due_date)::date AS year_month,
+		SUM(due_fee_interest) AS scheduled_cash_flow
+
+	FROM 		payment_schedule
+	GROUP BY 	DATE_TRUNC('month',due_date)
+	ORDER BY 	DATE_TRUNC('month',due_date)
+),
+
+scheduled_cash_flow AS
+(
+	SELECT 
+		dm.month_start as year_month, 
+		COALESCE(aps.scheduled_cash_flow, 0) AS scheduled_cash_flow
+
+	FROM 		dim_month dm
+	LEFT JOIN 	agg_payment_schedule aps
+	ON 			dm.month_start = aps.year_month
+	ORDER BY 	dm.month_start
+),
+
+-- filter to show only revenue labeled 'scheduled' and 'partial'
+agg_payments AS
+(
+	SELECT 
+		DATE_TRUNC('month',payment_date)::date AS year_month, 
+		SUM(paid_fee_interest) as actual_cash_flow
+	FROM payments
+	WHERE payment_type IN ('scheduled','partial')
+	GROUP BY DATE_TRUNC('month',payment_date)::date
+),
+
+-- join agg_payments with the calendar spine properly
+actual_cash_flow AS
+(
+	SELECT 
+		dm.month_start AS year_month, 
+		COALESCE(ap.actual_cash_flow, 0) AS actual_cash_flow
+	FROM dim_month dm
+	LEFT JOIN agg_payments ap
+	ON dm.month_start = ap.year_month
+)
+
+SELECT 
+	scf.year_month, 
+	scheduled_cash_flow, 
+	actual_cash_flow,
+	(actual_cash)
+FROM scheduled_cash_flow scf
+INNER JOIN actual_cash_flow acf
+ON scf.year_month = acf.year_month

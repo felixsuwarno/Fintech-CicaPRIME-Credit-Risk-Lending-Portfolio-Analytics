@@ -1,0 +1,235 @@
+-- =====================================================
+-- 1. PAID REVENUE (ACTUAL)
+-- =====================================================
+
+WITH base_monthly_paid_revenue AS
+(
+    SELECT
+        DATE_TRUNC('month', payment_date)::date AS year_month,
+        SUM(paid_fee_interest) AS actual_revenue
+    FROM payments
+    WHERE payment_type IN ('scheduled','partial')
+    GROUP BY 1
+),
+
+monthly_paid_revenue AS
+(
+    SELECT
+        dm.month_start AS year_month,
+        COALESCE(bmpr.actual_revenue, 0) AS actual_revenue
+    FROM dim_month dm
+    LEFT JOIN base_monthly_paid_revenue bmpr
+        ON dm.month_start = bmpr.year_month
+),
+
+-- =====================================================
+-- 2. ACTUAL CASH COLLECTED
+-- =====================================================
+
+base_monthly_actual_cash AS
+(
+    SELECT
+        DATE_TRUNC('month', payment_date)::date AS year_month,
+        SUM(payment_amount) AS actual_cash
+    FROM payments
+    GROUP BY 1
+),
+
+monthly_actual_cash AS
+(
+    SELECT
+        dm.month_start AS year_month,
+        COALESCE(bmac.actual_cash, 0) AS actual_cash
+    FROM dim_month dm
+    LEFT JOIN base_monthly_actual_cash bmac
+        ON dm.month_start = bmac.year_month
+),
+
+paid_revenue_actual_cash AS
+(
+    SELECT
+        mac.year_month,
+        mpr.actual_revenue,
+        mac.actual_cash
+    FROM monthly_actual_cash mac
+    LEFT JOIN monthly_paid_revenue mpr
+        ON mac.year_month = mpr.year_month
+),
+
+-- =====================================================
+-- 3. NET CREDIT LOSS (DEFAULTS – RECOVERIES)
+-- =====================================================
+
+defaulted_loans AS
+(
+    SELECT *
+    FROM loans
+    WHERE default_date IS NOT NULL
+),
+
+defaulted_loan_and_payments AS
+(
+    SELECT 
+        dl.*,
+        p.payment_date,
+        p.payment_type,
+        p.payment_amount,
+        p.paid_principal,
+        p.paid_fee_interest
+    FROM defaulted_loans dl
+    LEFT JOIN payments p
+        ON dl.loan_id = p.loan_id
+       AND p.payment_date <= dl.default_date
+),
+
+defaulted_loan_principal_paid AS
+(
+    SELECT
+        loan_id,
+        default_date,
+        principal,
+        COALESCE
+        (
+            SUM
+            (
+                CASE
+                    WHEN payment_type IN ('scheduled','partial')
+                    THEN paid_principal
+                    ELSE 0
+                END
+            ),
+            0
+        ) AS principal_paid_pre_default
+    FROM defaulted_loan_and_payments
+    GROUP BY 1,2,3
+),
+
+monthly_principal_loss AS
+(
+    SELECT
+        DATE_TRUNC('month', default_date)::date AS year_month,
+        SUM(principal - principal_paid_pre_default) AS actual_loss_unpaid_principal
+    FROM defaulted_loan_principal_paid
+    GROUP BY 1
+),
+
+monthly_principal_unpaid AS
+(
+    SELECT
+        dm.month_start AS year_month,
+        COALESCE(mpl.actual_loss_unpaid_principal, 0) AS actual_loss_unpaid_principal
+    FROM dim_month dm
+    LEFT JOIN monthly_principal_loss mpl
+        ON dm.month_start = mpl.year_month
+),
+
+monthly_recoveries AS
+(
+    SELECT
+        DATE_TRUNC('month', payment_date)::date AS year_month,
+        SUM(payment_amount) AS actual_loss_recovered_principal
+    FROM payments
+    WHERE payment_type = 'recovery'
+    GROUP BY 1
+),
+
+monthly_unpaid_and_recovered AS
+(
+    SELECT
+        mpu.year_month,
+        mpu.actual_loss_unpaid_principal,
+        COALESCE(mr.actual_loss_recovered_principal, 0) AS actual_loss_recovered_principal
+    FROM monthly_principal_unpaid mpu
+    LEFT JOIN monthly_recoveries mr
+        ON mpu.year_month = mr.year_month
+),
+
+monthly_net_loss AS
+(
+    SELECT
+        year_month,
+        actual_loss_unpaid_principal - actual_loss_recovered_principal AS actual_loss
+    FROM monthly_unpaid_and_recovered
+),
+
+-- =====================================================
+-- 4. MONTHLY ACTUALS
+-- =====================================================
+
+monthly_actuals AS
+(
+    SELECT
+        prac.year_month,
+        prac.actual_revenue AS actual_revenue,
+        prac.actual_cash    AS actual_cash,
+        COALESCE(mnl.actual_loss, 0) AS actual_loss
+    FROM paid_revenue_actual_cash prac
+    LEFT JOIN monthly_net_loss mnl
+        ON prac.year_month = mnl.year_month
+),
+
+-- =====================================================
+-- 5. MONTHLY BUDGET (RAW)
+-- =====================================================
+
+monthly_budget AS
+(
+    SELECT
+        month AS year_month,
+        scenario_name,
+        planned_revenue      AS budget_for_revenue,
+        planned_cash_inflow  AS budget_for_cash,
+        planned_net_losses   AS budget_for_loss
+    FROM budget_plan_monthly
+),
+
+-- =====================================================
+-- 6. MONTHLY BUDGET (PIVOTED)
+-- =====================================================
+
+monthly_budget_pivot AS
+(
+    SELECT
+        year_month,
+
+        MAX(CASE WHEN scenario_name = 'base'	THEN budget_for_revenue END) AS budget_base_for_revenue,
+        MAX(CASE WHEN scenario_name = 'stretch'	THEN budget_for_revenue END) AS budget_stretch_for_revenue,
+
+        MAX(CASE WHEN scenario_name = 'base'	THEN budget_for_cash 	END) AS budget_base_for_cash,
+        MAX(CASE WHEN scenario_name = 'stretch'	THEN budget_for_cash 	END) AS budget_stretch_for_cash,
+
+        MAX(CASE WHEN scenario_name = 'base'	THEN budget_for_loss 	END) AS budget_base_for_loss,
+        MAX(CASE WHEN scenario_name = 'stretch'	THEN budget_for_loss 	END) AS budget_stretch_for_loss
+
+    FROM monthly_budget
+    GROUP BY 1
+),
+
+-- =====================================================
+-- 7. ACTUALS VS BUDGET (FINAL OUTPUT)
+-- =====================================================
+
+monthly_actuals_vs_budget AS
+(
+    SELECT
+        ma.year_month,
+
+        ma.actual_revenue,
+        mbp.budget_base_for_revenue,
+        mbp.budget_stretch_for_revenue,
+
+        ma.actual_cash,
+        mbp.budget_base_for_cash,
+        mbp.budget_stretch_for_cash,
+
+        ma.actual_loss,
+        mbp.budget_base_for_loss,
+        mbp.budget_stretch_for_loss
+    FROM monthly_actuals ma
+    LEFT JOIN monthly_budget_pivot mbp
+        ON ma.year_month = mbp.year_month
+)
+
+SELECT *
+FROM monthly_actuals_vs_budget
+ORDER BY year_month;
