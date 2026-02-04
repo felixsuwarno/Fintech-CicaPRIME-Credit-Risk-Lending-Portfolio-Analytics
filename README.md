@@ -294,11 +294,12 @@ budget_stretch_for_loss
 <p align="center">
   <img src="Charts/01_3a_budget_vs_actual_on_revenue.png" width="100%">
 </p>
-**Key Insights**
 
-- Revenue grows steadily, but remains consistently below both the Base and Stretch budgets, meaning actual growth is slower than budgeted.
-- The dollar shortfall versus budget widens over time as the portfolio scales, so budget gaps become larger in absolute terms.
-- The variance remains negative across most months, indicating revenue consistently underperformed budget expectations, not just in isolated periods.
+**Key Insights**
+- Actual revenue is consistently above the Base budget, showing management planned conservatively.
+- Actual revenue stays below the Stretch budget, indicating growth did not rely on overly aggressive assumptions.
+- Revenue growth accelerates over time, especially in 2024–2025, driven by portfolio scale rather than one-off events.
+- Monthly variance versus budget is small and stable, suggesting forecasting accuracy improved as the portfolio matured.
 
 <br>
 <br>
@@ -308,9 +309,10 @@ budget_stretch_for_loss
 </p>
 
 **Key Insights**
-- Cash collections increase strongly and track much closer to the Base budget, especially in later months, indicating improving alignment between actual collections and budgeted cash.
-- Variance moves toward zero over time, which implies cash outcomes became more predictable relative to budget.
-- Actual cash remains below the Stretch budget, suggesting upside budget assumptions were aggressive, while the Base budget became a reasonable reference.
+- Actual cash collections exceed the Base plan every year, indicating stronger cash inflows than expected.
+- Actual cash remains below the Stretch plan, confirming that upside assumptions were intentionally aggressive.
+- Cash collections grow in line with portfolio expansion, without sudden drops or reversals.
+- Month-to-month cash variance is low, signaling predictable borrower repayment behavior.
 
 <br><br>
 
@@ -321,10 +323,11 @@ budget_stretch_for_loss
 <br><br>
 
 **Key Insights**
-
-- Credit losses are highly volatile, with repeated overshoots above both Base and Stretch budgets, indicating losses frequently exceeded budgeted levels.
-- Large swings in variance show that loss outcomes are unstable and harder to budget accurately than revenue or cash.
-- The lack of convergence toward budget over time implies credit loss risk remains the least controlled and most uncertain component of performance.
+- Actual credit losses are higher than both Base and Stretch budgets in most months.
+- Losses show high month-to-month volatility, reflecting the uneven timing of defaults.
+- Losses increase as the portfolio ages, consistent with loan seasoning effects.
+- Large variance percentages are driven by low planned losses, not by extreme absolute loss levels.
+- Even when losses exceed plan, they remain small relative to revenue and cash, preserving portfolio viability..
 
 <br><br>
 
