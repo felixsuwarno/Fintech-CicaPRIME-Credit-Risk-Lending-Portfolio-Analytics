@@ -331,3 +331,27 @@ budget_stretch_for_loss
 
 <br><br>
 
+### 2 — Borrower Activation, Churn & Value
+
+<br>
+
+**2.1. Customer Activation Timing**
+
+How long does it take customers to activate into credit usage by originating their first loan?
+
+**Tables used**
+- customers — signup date and segmentation attributes
+- loans — first loan origination date
+- dim_month ( the calendar spine )
+
+**SQL Method**
+- Compute the time difference between signup date and first loan origination per customer.
+- Aggregate activation times by signup cohort.
+
+**Python Method**
+- Analyze activation-time distributions and segment differences.
+- 
+
+<br>
+
+
