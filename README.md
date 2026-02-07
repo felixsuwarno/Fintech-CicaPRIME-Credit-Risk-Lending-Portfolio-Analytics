@@ -348,10 +348,11 @@ How long does it take customers to activate into credit usage by originating the
 - **Identify first credit usage**: Join loans to customers and, for each customer, find the earliest loan origination date that occurs on or after the signup date. This ensures activation reflects the first valid use of credit.
 - **Measure activation delay**: Calculate activation time as the number of days between customer signup and first loan origination.
 - **Summarize by cohort**: Group customers by signup month and compute the average and median activation days for each cohort to compare how quickly different signup cohorts activate into borrowing.
+- SQL output : a table with these columns : year_month, n_customers, avg_activation_days, median_activation_days
 
 **Python Method**
-- Analyze activation-time distributions and segment differences.
-- 
+- Compute and visualize activation-time metrics by signup month, applying a cutoff defined as last month in the data minus 18 months so that only fully observable cohorts are included in trend analysis.
+  
 
 <br>
 
