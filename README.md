@@ -1,6 +1,6 @@
 # WIP ( Work in Progress ) Feb 3rd 2026
 
-# Fintech “Cica PRIME” Credit Risk / Lending & Portfolio Analytics  
+# Consumer Lending “Cica PRIME” Credit Risk and Portfolio Analytics  
 **Risk Management • Portfolio Analytics • Forecasting • Stress Testing**
 
 This project analyzes synthetic but realistic consumer installment lending data from CICA (Consumer Installment Credit Account) Prime, a simulated consumer credit product designed to resemble real-world installment lending / BNPL-style portfolios offered by fintechs and traditional banks. The product extends unsecured credit to consumers and generates revenue through interest and fees, while incurring credit losses through delinquency and default.
