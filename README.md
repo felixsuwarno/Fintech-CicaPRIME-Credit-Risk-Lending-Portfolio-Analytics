@@ -362,8 +362,10 @@ How long does it take customers to activate into credit usage by originating the
 </p>
 
 **Key Insights**
+- The cutoff is set at 18 months before the latest data point because historical cohorts show that activation commonly occurs up to about one year after signup, and the additional buffer ensures cohorts are fully observed before analysis. Therefore, everything AFTER the cutoff line should not be considered for analytics.
 - For fully observed cohorts (before the cutoff), both average and median activation days steadily decline, indicating faster activation over time.
-- The median is consistently lower than the average, showing that activation times are right-skewed with a long tail of late activators.
+- The median is consistently lower than the average, showing that activation times are right-skewed with a long tail of very late activators.
 - The sharp drop in activation days after the cutoff is not meaningful because those cohorts are not fully observed.
 - Activated customer counts increase while activation times decrease before the cutoff, indicating improved activation speed without sacrificing volume.
 - Early cohorts show higher volatility in activation timing, likely due to process immaturity or smaller sample sizes.
+
