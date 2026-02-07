@@ -128,10 +128,10 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 - dim_month ( the calendar spine )
 
 **SQL Method**
-- Filter gross revenue (`paid_fee_interest`) for all `payment_type` labeled `scheduled` or `partial`.
-- Aggregate monthly realized interest and fee revenue using `payment_date`, converted to a `year_month` configuration.
+- Filter gross revenue ( **paid_fee_interest** ) for all **payment_type** labeled **scheduled** or **partial**.
+- Aggregate monthly realized interest and fee revenue using **payment_date**, converted to a **year_month** configuration.
 - Left join to a calendar spine to ensure zero-revenue months are included.
-- SQL Output : a simple table with two columns, year_month and gross_revenue.
+- SQL Output : a simple table with two columns, **year_month** and **gross_revenue**.
 
 **Python Method**
 - Load the monthly revenue output from SQL and index it by `year_month` as a monthly time series (`.asfreq("MS")`).
@@ -170,16 +170,16 @@ How do actual cash collections compare to scheduled payments on a monthly basis 
 How stable / reliable are monthly collection gaps across this period?
 
 **Tables used**
-- payment_schedule , contractual principal and interest due
-- payments , actual cash collected
-- dim_month ( the calendar spine )
+- **payment_schedule** , contractual principal and interest due
+- **payments** , actual cash collected
+- **dim_month** ( the calendar spine )
 
 **SQL Method**
-- Aggregate monthly scheduled cash flows from payment_schedule.
+- Aggregate monthly scheduled cash flows from **payment_schedule**.
 - Aggregate monthly actual cash flows from payments.
 - Align both series on the same monthly calendar spine.
 - Compute monthly cash collection gaps -> gap amount = actual − scheduled
-- SQL output: one clean monthly table with columns(year_month, scheduled_cash, actual_cash, cash_flow_gap)
+- SQL output: one clean monthly table with columns(**year_month**, **scheduled_cash**, **actual_cash**, **cash_flow_gap**)
 
 **Python Method**
 - Load the monthly table that shows how much cash was expected and how much cash was actually collected for each month.
@@ -226,38 +226,38 @@ This work produces two monthly tables that will eventually be joined on year_mon
 -> it has three columns, "**actual_revenue**" , "**actual_cash**" , "**actual_loss**", all in year_month.
 
 For the "**actual_revenue**":
-1. Use the payments table.
-2. Keep only scheduled and partial payments.
-3. Sum interest and fees actually paid.
-4. Group the results by month.
-5. Show zero for months with no revenue.
+- Use the **payments** table.
+- Keep only payments where **payment_type** IN ('scheduled','partial').
+- Sum **paid_fee_interest** (interest + fees actually collected).
+- Group results by **payment_date** month (year_month).
+- Left join to **dim_month** so every month exists, and fill missing months with 0 revenue.
 
 For the "**actual_cash**":
-1. Use the payments table.
-2. Add up all payment amounts.
-3. Group the results by month.
-4. Show zero for months with no cash.
+- Use the **payments** table.
+- Sum **payment_amount** (all cash collected, regardless of type).
+- Group results by **payment_date** month (**year_month**).
+- Left join to **dim_month** so every month exists, and fill missing months with 0 cash.
 
 For the "**actual_loss**":
-1. On the loans table, filter loans that defaulted using default_date IS NOT NULL.
-2. Join those defaulted loans to the payments table by loan_id, keeping only payment rows with payment_date <= default_date.
-3. For each loan, sum paid_principal using only payment_type IN ('scheduled','partial').
-4. Compute unpaid principal at default as principal - principal_paid_pre_default.
-5. Group unpaid principal by the month of the default_date.
-6. Separately, from the payments table, sum payment_amount by month where payment_type = 'recovery'.
-7. Align both monthly series on the same month calendar and fill missing months with 0.
-8. Subtract recovered principal from unpaid principal to get actual_loss.
+- Use the **loans** table and keep only defaulted loans where **default_date** IS NOT NULL.
+- Join those defaulted loans to payments by **loan_id**, keeping only payment rows where **payment_date** <= **default_date**.
+- For each defaulted loan, sum **paid_principal** only for **payment_type** IN ('**scheduled**','**partial**') to get principal paid before default.
+- Compute unpaid principal at default as: **principal** − **principal_paid_pre_default**.
+- Group unpaid principal by the month of **default_date** to get monthly unpaid principal loss.
+- Separately, from payments, sum **payment_amount** by month where **payment_type** = '**recovery**' to get monthly recoveries.
+- Align both monthly series to **dim_month** so every month exists, and fill missing months with 0.
+- Compute monthly net loss as: **unpaid_principal_loss** − **recovered_principal**.
 
 **Monthly Budget** (what management had planned ) 
 - Use the budget_plan_monthly source table at monthly grain (year_month).
 - Budget values are already provided in a pivoted format with fixed scenarios and metrics.
 - Select one row per year_month containing:
-	base_budget_for_revenue
-	stretch_budget_for_revenue
-	base_budget_for_cash
-	stretch_budget_for_cash
-	base_budget_for_loss
-	stretch_budget_for_loss
+	**base_budget_for_revenue**
+	**stretch_budget_for_revenue**
+	**base_budget_for_cash**
+	**stretch_budget_for_cash**
+	**base_budget_for_loss**
+	**stretch_budget_for_loss**
 - Join to the calendar spine to ensure all months are present.
 - Fill missing budget values with 0 to align with monthly actuals.
 - Output a single monthly budget table to be joined to monthly actuals on year_month.
@@ -265,19 +265,19 @@ For the "**actual_loss**":
 **Result** :
 A table with these columns
 
-year_month,
+**year_month**,
 
-actual_revenue,
-budget_base_for_revenue,
-budget_stretch_for_revenue,
+**actual_revenue**,
+**budget_base_for_revenue**,
+**budget_stretch_for_revenue**,
 
-actual_cash,
-budget_base_for_cash,
-budget_stretch_for_cash,
+**actual_cash**,
+**budget_base_for_cash**,
+**budget_stretch_for_cash**,
 
-actual_loss,
-budget_base_for_loss,
-budget_stretch_for_loss
+**actual_loss**,
+**budget_base_for_loss**,
+**budget_stretch_for_loss**
   
 <br>
 
@@ -345,8 +345,9 @@ How long does it take customers to activate into credit usage by originating the
 - dim_month ( the calendar spine )
 
 **SQL Method**
-- Compute the time difference between signup date and first loan origination per customer.
-- Aggregate activation times by signup cohort.
+- **Identify first credit usage**: Join loans to customers and, for each customer, find the earliest loan origination date that occurs on or after the signup date. This ensures activation reflects the first valid use of credit.
+- **Measure activation delay**: Calculate activation time as the number of days between customer signup and first loan origination.
+- **Summarize by cohort**: Group customers by signup month and compute the average and median activation days for each cohort to compare how quickly different signup cohorts activate into borrowing.
 
 **Python Method**
 - Analyze activation-time distributions and segment differences.
