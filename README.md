@@ -381,25 +381,17 @@ Which customers are likely to stop borrowing or become inactive after their init
 - loans — loan timing and frequency
 
 **SQL Method**
-- **Order loans and set end date**: <br>
-	Assign a fixed end date (2025-12-31) and number each customer’s loans by origination date.
-- **Find the first loan**:<br>
-	Keep the first loan per customer as the starting point.
-- **Find the second loan**:<br>
-  	Keep the second loan per customer, if it exists.
-- **Create the 180-day window**: <br>
-	Add 180 days to the first loan date to define how long we wait for a return loan.
-- **Decide who is included**: <br>
-	Mark customers as included only if their full 180-day window fits inside the data.
-- **Calculate inactivity score**:<br>
-  	For customers are not included the score is set to NULL<br>
-  	Included and has no second loand, assign score = 1<br>
-  	Included and second loan is within 180 days, calculate score = days between loans ÷ 180<br>
-  	Included and second loan is outside 180 days, assign score = 1<br>
-- **Attach customer attributes**: <br>
-	Join the score to the customers table to add stable customer information.
-- **Output the final table**: <br>
-  	Attach the inactivity score to customer table, send this for Python. Note that customers who are not "included", meaning the inactive_score is NULL, will be excluded from this table. 
+- **Order loans and set end date**: Assign a fixed portfolio end date (2025-12-31) and number each customer’s loans by origination date (and loan_id for ties) so we can consistently identify “first” and “second” loans.
+- **Isolate the first loan**: Keep only loan_number = 1 per customer to define the first_loan_id and first_loan_date, which anchors the customer’s borrowing start.
+- **Isolate the second loan**: Keep only loan_number = 2 per customer to capture the earliest “return borrowing” event (second_loan_id, second_loan_date) if it exists.
+- **Create the 180-day return window**: Join first and second loans and compute daydate_180 = first_loan_date + 180 days to define the return window boundary.
+- **Apply an observability cutoff** (include_flag): Mark customers as included only if daydate_180 is on or before 2025-12-31, so every included customer has a fully observable 180-day return window.
+- **Calculate inactivity score** :
+	- For customers are not included the score is set to NULL
+	- Included and has no second loan, assign score = 1
+	- Included and second loan is within 180 days, calculate score = days between loans ÷ 180
+	- Included and second loan is outside 180 days, assign score = 1
+- **Output the modeling spine** : Return one row per customer containing first/second loan timing, the 180-day window boundary, the include_flag, and the final inactive_score target for downstream Python work.
 
 **Python Method**
 - Compute and visualize activation-time metrics by signup month, applying a cutoff defined as last month in the data minus 18 months so that only fully observable cohorts are included in trend analysis.
