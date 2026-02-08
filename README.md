@@ -392,9 +392,10 @@ Which customers are likely to stop borrowing or become inactive after their init
 - **Decide who is included**: <br>
 	Mark customers as included only if their full 180-day window fits inside the data.
 - **Calculate inactivity score**:<br>
-	Included + second loan within 180 days → days between loans ÷ 180<br>
-	Included + no second loan (or after 180 days) → score = 1<br>
-	Not included → score = NULL<br>
+  	For customers are not included the score is set to NULL
+  	Included and has no second loand, assign score = 1
+  	Included and second loan is within 180 days, calculate score = days between loans ÷ 180<br>
+  	Included and second loan is outside 180 days, assign score = 1<br>
 - **Attach customer attributes**: <br>
 	Join the score to the customers table to add stable customer information.
 - **Output the final table**: <br>
