@@ -381,23 +381,23 @@ Which customers are likely to stop borrowing or become inactive after their init
 - loans — loan timing and frequency
 
 **SQL Method**
-- **Order loans and set end date**: 
+- **Order loans and set end date**: <br>
 	Assign a fixed end date (2025-12-31) and number each customer’s loans by origination date.
-- **Find the first loan**:
+- **Find the first loan**:<br>
 	Keep the first loan per customer as the starting point.
-- **Find the second loan**:
+- **Find the second loan**:<br>
   	Keep the second loan per customer, if it exists.
-- **Create the 180-day window**: 
+- **Create the 180-day window**: <br>
 	Add 180 days to the first loan date to define how long we wait for a return loan.
-- **Decide who is included**: 
+- **Decide who is included**: <br>
 	Mark customers as included only if their full 180-day window fits inside the data.
-- **Calculate inactivity score**:
+- **Calculate inactivity score**:<br>
 	Included + second loan within 180 days → days between loans ÷ 180
 	Included + no second loan (or after 180 days) → score = 1
 	Not included → score = NULL
-- **Attach customer attributes**: 
+- **Attach customer attributes**: <br>
 	Join the score to the customers table to add stable customer information.
-- **Output the final table**: 
+- **Output the final table**: <br>
 	One row per borrowing customer with attributes and inactivity score, ready for Python.
 
 **Python Method**
