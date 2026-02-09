@@ -154,13 +154,7 @@ How did total portfolio interest and fee revenue perform on a monthly basis from
 
 **Key Insights**
 
-- Monthly interest and fee revenue increases steadily from 2023 to 2025, with faster growth in 2024–2025 compared to 2023.
-- The trend component is smooth and strongly upward across the full period.
-- Revenue follows a predictable yearly pattern, but these seasonal ups and downs are much smaller than the overall growth.
-- The seasonal component shows a consistent yearly pattern, with revenue tending to be higher toward the end of each year.
-- Seasonal fluctuations are stable over time and materially smaller than the overall growth trend.
-- The 12-month SARIMA forecast shows revenue continuing to rise beyond 2025, with even the conservative (lower-bound) forecast increasing over time.
-- Forecast uncertainty increases gradually over the horizon, but the lower confidence bound remains well above earlier historical revenue levels.
+TO BE WRITTEN
 
 <br><br>
 
@@ -198,10 +192,7 @@ How stable / reliable are monthly collection gaps across this period?
 <br>
 
 **Key Insights**
-- Collections fall below schedule in most months, with about 86% of months collecting less cash than contractually expected.
-- The typical monthly shortfall is modest and steady, averaging roughly 4–5% below plan.
-- Large negative gaps are uncommon, as most months cluster within a narrow under-collection range.
-- There is no sign of worsening over time, with the size and volatility of gaps remaining broadly stable from 2023 through 2025.
+TO BE WRITTEN
 
 <br><br>
 
@@ -296,10 +287,7 @@ A table with these columns
 </p>
 
 **Key Insights**
-- Actual revenue is consistently above the Base budget, showing management planned conservatively.
-- Actual revenue stays below the Stretch budget, indicating growth did not rely on overly aggressive assumptions.
-- Revenue growth accelerates over time, especially in 2024–2025, driven by portfolio scale rather than one-off events.
-- Monthly variance versus budget is small and stable, suggesting forecasting accuracy improved as the portfolio matured.
+TO BE WRITTEN
 
 <br>
 <br>
@@ -309,10 +297,7 @@ A table with these columns
 </p>
 
 **Key Insights**
-- Actual cash collections exceed the Base plan every year, indicating stronger cash inflows than expected.
-- Actual cash remains below the Stretch plan, confirming that upside assumptions were intentionally aggressive.
-- Cash collections grow in line with portfolio expansion, without sudden drops or reversals.
-- Month-to-month cash variance is low, signaling predictable borrower repayment behavior.
+TO BE WRITTEN
 
 <br><br>
 
@@ -323,11 +308,7 @@ A table with these columns
 <br><br>
 
 **Key Insights**
-- Actual credit losses are higher than both Base and Stretch budgets in most months.
-- Losses show high month-to-month volatility, reflecting the uneven timing of defaults.
-- Losses increase as the portfolio ages, consistent with loan seasoning effects.
-- Large variance percentages are driven by low planned losses, not by extreme absolute loss levels.
-- Across the whole period, the money lost from unpaid loans is small compared to the money the business earns and collects. Even in months where losses are higher than planned, the business still brings in far more cash than it loses, so it can easily absorb those losses.
+TO BE WRITTEN
 
 <br><br>
 
@@ -362,12 +343,7 @@ How long does it take customers to activate into credit usage by originating the
 </p>
 
 **Key Insights**
-- The cutoff is set at 18 months before the latest data point because historical cohorts show that activation commonly occurs up to about one year after signup, and the additional buffer ensures cohorts are fully observed before analysis. Therefore, everything AFTER the cutoff line should not be considered for analytics.
-- For fully observed cohorts (before the cutoff), both average and median activation days steadily decline, indicating faster activation over time.
-- The median is consistently lower than the average, showing that activation times are right-skewed with a long tail of very late activators.
-- The sharp drop in activation days after the cutoff is not meaningful because those cohorts are not fully observed.
-- Activated customer counts increase while activation times decrease before the cutoff, indicating improved activation speed without sacrificing volume.
-- Early cohorts show higher volatility in activation timing, likely due to process immaturity or smaller sample sizes.
+TO BE WRITTEN
 
 <br>
 <br>
@@ -409,19 +385,32 @@ Which customers are likely to stop borrowing or become inactive after their init
   <img src="Charts/02_2a_borrower_inactivity_and_churn_risk.png" width="100%">
 </p>
 
-**Key Insights**
-- The cutoff is set at 18 months before the latest data point because historical cohorts show that activation commonly occurs up to about one year after signup, and the additional buffer ensures cohorts are fully observed before analysis. Therefore, everything AFTER the cutoff line should not be considered for analytics.
-- For fully observed cohorts (before the cutoff), both average and median activation days steadily decline, indicating faster activation over time.
-- The median is consistently lower than the average, showing that activation times are right-skewed with a long tail of very late activators.
-- The sharp drop in activation days after the cutoff is not meaningful because those cohorts are not fully observed.
-- Activated customer counts increase while activation times decrease before the cutoff, indicating improved activation speed without sacrificing volume.
-- Early cohorts show higher volatility in activation timing, likely due to process immaturity or smaller sample sizes.
-
 <br>
 
 <p align="center">
   <img src="Charts/02_2b_borrower_inactivity_and_churn_risk.png" width="100%">
 </p>
+
+<br>
+
+<p align="center">
+  <img src="Charts/02_2c_borrower_inactivity_and_churn_risk.png" width="100%">
+</p>
+
+<br>
+
+<p align="center">
+  <img src="Charts/02_2d_borrower_inactivity_and_churn_risk.png" width="100%">
+</p>
+
+<br>
+
+<p align="center">
+  <img src="Charts/02_2e_borrower_inactivity_and_churn_risk.png" width="100%">
+</p>
+
+**Key Insights**
+TO BE WRITTEN
 
 <br>
 <br>
