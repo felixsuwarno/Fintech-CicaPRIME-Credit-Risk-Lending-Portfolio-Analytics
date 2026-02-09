@@ -1,0 +1,44 @@
+-- left join loan and customer table
+-- because we only want customers who made a loan and ignore those
+-- who dont loan anything.
+
+-- make sure we only get each customer's earliest loan
+
+-- make sure that the activation day is not minus,
+-- meaning origination date has to be on the same day as the signup_date
+-- OR later than the signup_date
+WITH activation_table AS
+(
+    SELECT
+        l.customer_id,
+        c.signup_date,
+        MIN(l.origination_date) AS origination_date
+    FROM loans l
+    JOIN customers c
+        ON l.customer_id = c.customer_id
+    WHERE l.origination_date >= c.signup_date
+    GROUP BY
+        l.customer_id,
+        c.signup_date
+),
+
+activation_day AS
+(
+    SELECT
+        customer_id,
+        signup_date,
+        origination_date,
+        (origination_date::date - signup_date::date) AS activation_days
+    FROM activation_table
+)
+
+SELECT
+    DATE_TRUNC('month', signup_date)::date AS year_month,
+    ROUND(AVG(activation_days), 2) AS avg_activation_days,
+    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY activation_days) AS median_activation_days,
+    COUNT(*) AS n_customers
+FROM activation_day
+GROUP BY 1
+ORDER BY year_month;
+
+

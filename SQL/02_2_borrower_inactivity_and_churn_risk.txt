@@ -1,0 +1,101 @@
+WITH ordered_loans AS
+(
+    -- Step 1: Order loans per customer so we can identify first and second loans
+    SELECT
+        customer_id,
+        loan_id,
+        origination_date,
+        ROW_NUMBER() OVER 
+		(
+            PARTITION BY 	customer_id
+            ORDER BY 		origination_date, loan_id
+        ) AS loan_number
+    FROM loans
+),
+
+first_loan AS
+(
+    -- Step 2: Isolate the first loan per customer
+    SELECT
+        customer_id,
+        loan_id        		AS first_loan_id,
+        origination_date 	AS first_loan_date
+    FROM ordered_loans
+    WHERE loan_number = 1
+),
+
+second_loan AS
+(
+    -- Step 3: Isolate the second loan per customer (if it exists)
+    SELECT
+        customer_id,
+        loan_id         	AS second_loan_id,
+        origination_date  	AS second_loan_date
+    FROM ordered_loans
+    WHERE loan_number = 2
+),
+
+join_first_and_second_loans AS
+(
+    -- Step 4: Join first loan to earliest possible second loan per customer
+    SELECT
+        f.customer_id,
+        f.first_loan_id,
+        f.first_loan_date,
+        s.second_loan_id,
+        s.second_loan_date
+    FROM first_loan f
+    LEFT JOIN second_loan s
+        ON f.customer_id = s.customer_id
+),
+
+inactivity_target AS
+(
+    -- Step 5: Define inactivity based on a fully observable 180-day return window
+    SELECT
+        customer_id,
+        first_loan_id,
+        first_loan_date,
+        second_loan_id,
+        second_loan_date,
+        CAST(first_loan_date + INTERVAL '180 days' AS date) AS daydate_180,
+        CASE
+            WHEN first_loan_date + INTERVAL '180 days' > DATE '2025-12-31'
+            THEN NULL
+
+            WHEN second_loan_date IS NULL
+            THEN 1
+
+            WHEN second_loan_date > first_loan_date + INTERVAL '180 days'
+            THEN 1
+
+            ELSE 0
+        END AS inactive_flag
+    FROM join_first_and_second_loans
+),
+
+modeling_table AS
+(
+    -- Step 6: Attach stable customer attributes for downstream Python analysis
+    SELECT
+        t.customer_id,
+        t.first_loan_id,
+        t.first_loan_date,
+        t.second_loan_id,
+        t.second_loan_date,
+        t.daydate_180,
+        t.inactive_flag,
+        c.acquisition_channel,
+        c.risk_tier_at_signup,
+        c.income_band,
+        c.age_band,
+        c.region
+    FROM inactivity_target t
+    JOIN customers c
+        ON t.customer_id = c.customer_id
+)
+
+-- Step 7: Output one clean row per customer for modeling
+SELECT *
+FROM modeling_table
+ORDER BY customer_id;
