@@ -349,15 +349,17 @@ Did borrowers begin falling behind on payments before credit losses increased sh
 
 **SQL Method**
 
-- **Define scheduled loan obligations:** From payment_schedule, compute each loan’s cumulative scheduled amount due across installments so contractual exposure can be evaluated at any point in time.
-- **Aggregate realized payments:** From payments, sum total payments per loan up to a given reporting date so actual repayment progress is known.
-- **Compute outstanding exposure:** For each loan and reporting date, calculate outstanding balance as cumulative scheduled due minus cumulative payments made up to that date.
-- **Flag 30+ days-past-due loans:** Mark a loan as 30+ DPD at a reporting date if any unpaid installment has a due date at least 30 days before that reporting date.
-- **Define active loan population:** From loans, identify loans that were originated and still outstanding (not fully repaid and not defaulted) at each reporting date to form the monthly denominator.
-- **Apply consistent month-end snapshots:** Use dim_month to evaluate every loan’s status at the same month-end reporting date each month to ensure a consistent time-series trend.
-- **Compute monthly delinquency rate:** For each month, divide the number of 30+ DPD loans by the number of active loans.
-- **Measure monthly defaults:** From loans.default_date, count defaults per month to compare delinquency buildup versus realized credit losses.
-- **SQL output:** a table with these columns: year_month, active_loans, dpd30_loans, dpd30_rate, defaulted_loans
+- **Define scheduled loan obligations:** From payment_schedule, compute each loan’s cumulative scheduled amount due through each installment so contractual exposure can be measured as of any reporting date.
+- **Aggregate realized payments:** From payments, sum total payments per loan up to each reporting date so repayment progress is measured without using future payments.
+- **Compute outstanding exposure:** For each loan and reporting date, calculate outstanding amount as cumulative scheduled due minus cumulative payments made up to that reporting date.
+- **Compute days past due at snapshot:** For each loan and reporting date, identify the oldest unpaid due date (earliest installment still outstanding) and calculate dpd_days = reporting_date - oldest_unpaid_due_date.
+- **Assign risk bucket:** Classify each loan-month into one bucket using dpd_days: Current (0), 1–29, 30–59, 60–89, 90+; treat loans with no unpaid installments as Current.
+- **Define active loan population:** From loans, keep loans that are originated on/before the reporting date and not defaulted on/before the reporting date as the eligible population for monthly risk distribution.
+- **Apply consistent month-end snapshots: Use dim_month month-end as the reporting date for every month so buckets are comparable over time.
+- **Summarize monthly bucket mix and 30+ DPD rate:** For each month, count loans in each risk bucket and compute 30+ DPD rate as (30–59 + 60–89 + 90+) divided by active loans.
+- **Overlay monthly defaults: From loans.default_date, count defaults per month to compare whether bucket deterioration appears before defaults rise.
+- **SQL output:** a table with these columns:
+year_month, active_loans, current_loans, dpd_1_29_loans, dpd_30_59_loans, dpd_60_89_loans, dpd_90_plus_loans, dpd_30_plus_rate, defaulted_loans
 
 <br><br>
 
