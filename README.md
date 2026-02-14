@@ -334,7 +334,7 @@ A table with these columns
 
 <br>
 
-**1.4. Delinquency & Default Trends**<br>
+**1.4. Delinquency & Default Trends**<br><br>
 Did borrowers begin falling behind on payments before credit losses increased sharply, and how did the monthly 30+ days-past-due (30+ DPD) rate evolve over time?
 
 **Tables used**
