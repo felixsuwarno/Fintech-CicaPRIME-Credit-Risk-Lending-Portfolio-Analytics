@@ -297,7 +297,11 @@ A table with these columns
 </p>
 
 **Key Insights**
-TO BE WRITTEN
+- Revenue grew steadily from 2023 through 2025, reflecting consistent portfolio expansion.
+- During 2023 and most of 2024, actual revenue remained above the base plan, indicating stronger monetization than management initially forecasted.
+- Performance periodically approached the stretch target in 2024, showing that growth was temporarily aligned with aggressive expectations.
+- In 2025, revenue continued rising in absolute dollars but began underperforming both base and stretch plans, signaling a slowdown relative to budgeted growth.
+- The variance trend shows a shift from outperformance in early years to underperformance later, suggesting planning assumptions became more aggressive than realized revenue growth.
 
 <br>
 <br>
@@ -307,7 +311,11 @@ TO BE WRITTEN
 </p>
 
 **Key Insights**
-TO BE WRITTEN
+- Cash collections increased each year, reflecting portfolio expansion and higher repayment volumes.
+- Actual cash fell below the base plan in nearly every month after early 2023, indicating consistent underperformance versus management expectations.
+- The shortfall versus stretch targets was larger and persistent, showing that the aggressive growth scenario was not achieved.
+- The variance trend shows the deviation becoming more negative over time, meaning the difference between expected and realized cash did not correct as the portfolio matured.
+- By late 2025, the cash gap reached its widest levels, signaling structural pressure on liquidity relative to plan.
 
 <br><br>
 
@@ -318,7 +326,11 @@ TO BE WRITTEN
 <br><br>
 
 **Key Insights**
-TO BE WRITTEN
+- Actual credit losses were much higher than planned in most months after early 2024.
+- Losses increased sharply and stayed high through 2025, far above what the budget expected.
+- Instead of rising slowly and smoothly, losses jumped in spikes, meaning defaults happened in waves.
+- The difference between planned and actual losses became very large, especially during peak months.
+- Compared to revenue and cash, credit losses were the biggest source of budget problems.
 
 <br><br>
 
