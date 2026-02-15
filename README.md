@@ -221,72 +221,55 @@ Did actual revenue earned, cash collected, and credit losses differ from what ma
 <br>
 
 **SQL Method :** <br>
-This work produces two monthly tables that will eventually be joined on year_month, Monthly actuals table and Monthly budget table.
+This work produces three tables.
 
-**Monthly Actuals** (what really happened) 
--> it has three columns, "**actual_revenue**" , "**actual_cash**" , "**actual_loss**", all in year_month.
+**Actual Revenue:**
+- **Identify realized revenue cashflows:** Use the payments table and keep only rows where payment_type IN ('scheduled','partial') so revenue reflects interest/fees actually collected.
+- **Aggregate to monthly revenue:** Group by payment_date month and sum paid_fee_interest to produce actual_revenue by year_month.
+- **Preserve missing months:** Left join the monthly revenue series to dim_month on month_start so every month appears even when revenue is zero, and fill missing months with 0.
+- **Output the revenue table:** Return **year_month** and **actual_revenue** ordered by **year_month**. 
 
-For the "**actual_revenue**":
-- Use the **payments** table.
-- Keep only payments where **payment_type** IN ('scheduled','partial').
-- Sum **paid_fee_interest** (interest + fees actually collected).
-- Group results by **payment_date** month (year_month).
-- Left join to **dim_month** so every month exists, and fill missing months with 0 revenue.
+**Actual Cash:**
+- **Identify all cash collected:** Use the payments table and include all payment rows so this metric captures total cash inflow, not just revenue.
+- **Aggregate to monthly cash:** Group by payment_date month and sum payment_amount to produce actual_cash by year_month.
+- **Preserve missing months:** Left join the monthly cash series to dim_month on month_start so every month appears even when cash is zero, and fill missing months with 0.
+- **Output the cash table:** Return **year_month** and **actual_cash** ordered by **year_month**.
 
-For the "**actual_cash**":
-- Use the **payments** table.
-- Sum **payment_amount** (all cash collected, regardless of type).
-- Group results by **payment_date** month (**year_month**).
-- Left join to **dim_month** so every month exists, and fill missing months with 0 cash.
+**Actual Net Credit Loss:**
+- **Identify default events:** Filter loans to only defaulted loans where **default_date** IS NOT NULL so losses are tied to actual defaults.
+- **Measure unpaid principal at default:** Left join defaulted loans to payments on loan_id and keep only payments with **payment_date** <= **default_date**, then sum paid_principal for payment_type IN ('scheduled','partial') to compute principal_paid_pre_default.
+- **Aggregate monthly principal loss:** For each defaulted loan compute principal - **principal_paid_pre_default** and sum by the month of default_date to produce **actual_loss_unpaid_principal** by year_month.
+- **Preserve missing months for loss:** Left join monthly principal loss to **dim_month** so every month appears, and fill missing months with 0.
+- **Measure monthly recoveries:** From payments, filter to payment_type = **'recovery'** and sum **payment_amount** by month to produce **actual_loss_recovered_principal**.
+- **Compute monthly net loss:** For each month compute **actual_loss** = **actual_loss_unpaid_principal** - **actual_loss_recovered_principal**, using 0 for missing recoveries, and output **year_month** and **actual_loss** ordered by month.
 
-For the "**actual_loss**":
-- Use the **loans** table and keep only defaulted loans where **default_date** IS NOT NULL.
-- Join those defaulted loans to payments by **loan_id**, keeping only payment rows where **payment_date** <= **default_date**.
-- For each defaulted loan, sum **paid_principal** only for **payment_type** IN ('**scheduled**','**partial**') to get principal paid before default.
-- Compute unpaid principal at default as: **principal** − **principal_paid_pre_default**.
-- Group unpaid principal by the month of **default_date** to get monthly unpaid principal loss.
-- Separately, from payments, sum **payment_amount** by month where **payment_type** = '**recovery**' to get monthly recoveries.
-- Align both monthly series to **dim_month** so every month exists, and fill missing months with 0.
-- Compute monthly net loss as: **unpaid_principal_loss** − **recovered_principal**.
-
-**Monthly Budget** (what management had planned ) 
-- Use the budget_plan_monthly source table at monthly grain (year_month).
-- Budget values are already provided in a pivoted format with fixed scenarios and metrics.
-- Select one row per year_month containing:
-	**base_budget_for_revenue**
-	**stretch_budget_for_revenue**
-	**base_budget_for_cash**
-	**stretch_budget_for_cash**
-	**base_budget_for_loss**
-	**stretch_budget_for_loss**
-- Join to the calendar spine to ensure all months are present.
-- Fill missing budget values with 0 to align with monthly actuals.
-- Output a single monthly budget table to be joined to monthly actuals on year_month.
-
-**Result** :
-A table with these columns
-
-**year_month**,
-
-**actual_revenue**,
-**budget_base_for_revenue**,
-**budget_stretch_for_revenue**,
-
-**actual_cash**,
-**budget_base_for_cash**,
-**budget_stretch_for_cash**,
-
-**actual_loss**,
-**budget_base_for_loss**,
-**budget_stretch_for_loss**
-  
 <br>
 
 **Python Method :**
-- Read the pre-aggregated monthly budget vs actual CSV
-- Compute monthly variance by subtracting each budget value (Base and Stretch) from the actual result, so each variance column directly measures how far real performance deviated from plan in dollars.
-- Convert each monthly dollar variance into a percent of the budget, so the size of the gap is comparable across months; for losses, a positive percent means losses exceeded plan.
-- This delivers 3 charts ( each for Revenue, Cash, Net Credit Loss ), each chart is a 2-row stacked figure. Top chart is the Budget VS Actual, bottom chart is the Monthly Variance % vs Base + Stretch with a zero line.
+
+**Budget vs Actual Revenue:**
+- Load monthly actual revenue and monthly budget plan data, and convert the month fields into real dates so the timeline is consistent.
+- Align both datasets to a monthly calendar index so every month exists in order, then fill missing actual revenue months with 0 so “no activity” is treated as 0.
+- Build two budget revenue series (Base and Stretch) by filtering the budget data by scenario and aggregating planned revenue per month, then join them side-by-side.
+- Join actual revenue to the two budget revenue series by month so each month has Actual, Budget(Base), and Budget(Stretch).
+- Compute variance in dollars (Actual − Budget) and variance percent ((Actual − Budget) ÷ Budget) for both Base and Stretch, treating 0-budget months as undefined percent variance.
+- Plot a two-panel chart: top panel shows Actual vs Base vs Stretch in dollars; bottom panel shows monthly variance percent vs Base and Stretch with a zero line.
+
+**Budget vs Actual Cash:**
+- Load monthly actual cash and monthly budget plan data, and convert the month fields into real dates so the timeline is consistent.
+- Align both datasets to a monthly calendar index so every month exists in order, then fill missing actual cash months with 0 so “no activity” is treated as 0.
+- Build two budget cash series (Base and Stretch) by filtering the budget data by scenario and aggregating planned cash inflow per month, then join them side-by-side.
+- Join actual cash to the two budget cash series by month so each month has Actual, Budget(Base), and Budget(Stretch).
+- Compute variance in dollars (Actual − Budget) and variance percent ((Actual − Budget) ÷ Budget) for both Base and Stretch, treating 0-budget months as undefined percent variance.
+- Plot a two-panel chart: top panel shows Actual vs Base vs Stretch in dollars; bottom panel shows monthly variance percent vs Base and Stretch with a zero line.
+
+**Budget vs Actual Net Credit Loss:**
+- Load monthly actual net credit loss and monthly budget plan data, and convert the month fields into real dates so the timeline is consistent.
+- Align both datasets to a monthly calendar index so every month exists in order, then fill missing actual loss months with 0 so “no loss recorded” is treated as 0.
+- Build two budget loss series (Base and Stretch) by filtering the budget data by scenario and aggregating planned net losses per month, then join them side-by-side.
+- Join actual loss to the two budget loss series by month so each month has Actual, Budget(Base), and Budget(Stretch).
+- Compute variance in dollars (Actual − Budget) and variance percent ((Actual − Budget) ÷ Budget) for both Base and Stretch, treating 0-budget months as undefined percent variance; interpret positive variance as “losses worse than plan.”
+- Plot a two-panel chart: top panel shows Actual vs Base vs Stretch in dollars; bottom panel shows monthly variance percent vs Base and Stretch with a zero line.
 
 <br>
 
@@ -387,7 +370,7 @@ To create the required table, the process is complex. Therefore, the SQL logic w
 **Python Method**
 
 - **Load the monthly trend dataset:** Read 01_4d_portfolio_delinquency_trend.csv, parse year_month as a date, sort by time, and set year_month as the time index so each row represents one month.
-- S**tandardize column names for stability:** Normalize column names (trim spaces, lowercase, replace spaces with underscores) so later steps do not break due to formatting differences.
+- **Standardize column names for stability:** Normalize column names (trim spaces, lowercase, replace spaces with underscores) so later steps do not break due to formatting differences.
 - **Normalize the 30+ delinquency metric:** Identify the DPD 30+ rate column and convert it into a consistent percentage series so it is comparable month to month.
 - **Smooth the signals for trend reading:** Compute a 3-month rolling average for DPD 30+ rate and for monthly defaulted loans to reduce noise and make the direction of change easier to see.
 - **Convert bucket counts into portfolio mix shares:** If delinquency bucket count columns exist (Current, 1–29, 30–59, 60–89, 90+), divide each bucket by active_loans to create bucket share percentages for portfolio mix tracking.
