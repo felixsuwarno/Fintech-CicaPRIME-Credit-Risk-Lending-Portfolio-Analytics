@@ -353,20 +353,35 @@ To create the required table, the process is complex. Therefore, the SQL logic w
 
 **01_4a — Scheduled Payment Plan**
 
-- Build a month-end calendar from dim_month so each reporting month has a consistent month_end date.
-- Join payment_schedule to the calendar using due_date <= month_end so each installment is counted once it becomes due.
-- Aggregate to one row per loan_id + month_end and sum due_total to compute due_at_month_end.
+- Build a month-end calendar from **dim_month** so each reporting month has a consistent **month_end** date.
+- Join **payment_schedule** to the calendar using **due_date** <= **month_end** so each installment is counted once it becomes due.
+- Aggregate to one row per **loan_id** + **month_end** and sum **due_total** to compute **due_at_month_end**.
 - Output the cumulative contractual amount that should have been paid by each month-end.
 
 **01_4b — Collected Payments**
-- Build a month-end calendar from dim_month.
-- Clean payments at the daily level:
-		- Keep scheduled and partial as positive.
-  		- Convert refund to negative.
-- Join cleaned payments to month-end using payment_date <= month_end so payments accumulate through time.
-- Aggregate to one row per loan_id + month_end and sum as paid_at_month_end.
+- Build a month-end calendar from **dim_month**.
+- Clean payments at the daily level: Keep **scheduled** and **partial** as positive and then convert **refund** to negative.
+- Join cleaned payments to month-end using **payment_date** <= **month_end** so payments accumulate through time.
+- Aggregate to one row per **loan_id** + **month_end** and sum as **paid_at_month_end**.
 - Output the cumulative cash actually paid by each month-end.
 
+**01_4c — Delinquency at Month-End**
+- Join **scheduled** vs **paid** tables at **loan_id** + **month_end**.
+- Compute **unpaid_at_month_end** as **due_at_month_end** − **paid_at_month_end**, floored at zero.
+- For loans with unpaid balance, join back to payment_schedule to identify all due installments on or before month_end.
+- For each loan-month, compute **oldest_unpaid_due_date** using MIN(due_date).
+- Calculate dpd_days as the difference between **month_end** and **oldest_unpaid_due_date**.
+- Assign **dpd_bucket** based on **dpd_days** (Current, 1–29, 30–59, 60–89, 90+).
+- Output one clean loan-level delinquency snapshot per month-end.
+
+**01_4d — Portfolio Delinquency Trend**
+- Aggregate **01_4c_delinquency_at_month_end** by year_month:
+  - Count total active loans.
+  - Count loans in each DPD bucket.
+- Compute **dpd_30_plus_rate** as (30–59 + 60–89 + 90+) divided by total active loans.
+- Separately aggregate loans to count defaulted_loans by default month.
+- Join delinquency metrics to monthly defaults.
+- Output one monthly portfolio table showing delinquency trend and default trend side-by-side.
 
 <br><br>
 
