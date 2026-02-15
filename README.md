@@ -503,5 +503,16 @@ Which customers are likely to stop borrowing or become inactive after their init
 **Key Insights**
 TO BE WRITTEN
 
+<br><br>
+
+**2.3. Customer lifetime value (LTV)**
+
+Which customers are expected to generate the highest lifetime value after accounting for credit losses?
+
+**Tables used**
+- customers
+- loans
+- payments
+
 <br>
 <br>
