@@ -514,5 +514,43 @@ Which customers are expected to generate the highest lifetime value after accoun
 - loans
 - payments
 
+**SQL Method**
+- **Define 180-day evaluation window:** For each loan, create a cutoff date equal to origination date + 180 days. This ensures all loans are evaluated over the same time horizon.
+- **Restrict payments to the evaluation window:** Keep only payments made on or before the cutoff date. Preserve loans with no payments to avoid overstating performance.
+- **Identify defaults within 180 days:** Create a flag equal to 1 when the loan defaulted on or before the cutoff date; otherwise 0. This separates true credit losses from active balances.
+- **Compute cumulative cash and principal per loan:** Within the 180-day window, calculate running totals of payment amount (cash collected) and principal repaid for each loan.
+- **Select one snapshot row per loan:** Use row_number logic to retain the most recent payment record within the window. This ensures exactly one row per loan before aggregation.
+- **Calculate loan-level loss at 180 days:**
+  - Outstanding principal at 180 days = original principal − cumulative principal repaid.
+  - **Loss_180d** = outstanding principal only if default occurred within 180 days; otherwise 0.
+- **Roll up to customer level:** Group by customer_id and compute:
+  - **Total_payment_180d** = sum of cumulative payments across loans
+  - **Total_loss_180d** = sum of loss_180d across loans
+  - **Net_ltv_180d** = **Total_payment_180d** − **Total_loss_180d**
+- **Rank customers by value:** Order customers by **Net_ltv_180d** descending to identify the highest-value customers after accounting for credit losses.
+
 <br>
 <br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
