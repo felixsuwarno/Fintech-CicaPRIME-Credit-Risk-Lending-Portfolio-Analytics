@@ -547,7 +547,7 @@ This query summarizes the LTV data into a set of statistics that are easier to r
 <br>
 
 <p align="center">
-  <img src="Charts/02_3_customer_LTV_180d_summary.png" width="25%">
+  <img src="Charts/02_3_customer_LTV_180d_summary.png" style="width:25%;">
 </p>
 There is no data visualization chart necessary to answer the business question.
 
