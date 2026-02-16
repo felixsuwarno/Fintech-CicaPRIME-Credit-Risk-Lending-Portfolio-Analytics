@@ -507,7 +507,7 @@ TO BE WRITTEN
 
 **2.3. Customer lifetime value (LTV)**
 
-Which customers are expected to generate the highest lifetime value after accounting for credit losses?
+Which customer(s) are expected to generate the highest lifetime value after accounting for credit losses?
 
 **Tables used**
 - customers
@@ -544,6 +544,12 @@ This query summarizes the LTV data into a set of statistics that are easier to r
 - **Identify the most profitable customer:** Sort customers by net_ltv_180d in descending order and select the first row to find the highest net value contributor.
 - **Generate a concise report:** Print the portfolio-level totals and the top customer’s metrics in a clean, readable format for documentation and review.
 
+<br>
+
+<p align="center">
+  <img src="Charts/02_3_customer_LTV_180d_summary.png" width="100%">
+</p>
+There is no data visualization chart necessary to answer the business question.
 
 <br>
 <br>
