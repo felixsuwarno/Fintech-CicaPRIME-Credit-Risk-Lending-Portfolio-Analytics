@@ -1,0 +1,142 @@
+WITH loans_base AS
+(
+	SELECT 
+		customer_id,
+		loan_id,
+		origination_date,
+		principal,
+		default_date	
+	FROM loans
+),
+
+payments_included AS
+(
+	SELECT 
+	    loan_id,
+        payment_date,
+        payment_type,
+        payment_amount,
+        paid_principal,
+        paid_fee_interest
+	FROM payments
+	WHERE payment_type IN ('scheduled','partial')	
+),
+
+base_LTV_table AS
+(
+	SELECT 
+	    l.customer_id,
+        l.loan_id,
+        l.origination_date,
+        l.principal,
+        l.default_date,
+        p.payment_date,
+        p.payment_type,
+        p.payment_amount,
+        p.paid_principal,
+        p.paid_fee_interest
+	FROM loans_base l
+	LEFT JOIN payments_included p
+	ON l.loan_id = p.loan_id
+),
+
+-- cutoff date is 180 days after origination_date
+-- include only rows where payment is made before or equal of cutoff date
+-- do not get rid of rows where payment_date is NULL : we want to include
+-- all loans without payment
+base_LTV_table_cutoff_date AS
+(
+	SELECT 
+		customer_id,
+		loan_id,
+		origination_date,
+		CAST(origination_date + INTERVAL '180 day' AS DATE) AS cutoff_date,
+		principal,
+		default_date,
+		payment_date,
+		payment_type,
+		payment_amount,
+		paid_principal,
+		paid_fee_interest
+	FROM base_LTV_table
+	WHERE (payment_date <= (origination_date + INTERVAL '180 day')) OR payment_date IS NULL
+),
+
+-- flag those who default before 180 days
+-- check default_date, if it is before cutoff_date, flag it
+base_LTV_default_flag AS
+(
+	SELECT
+		*,
+		CASE 
+			WHEN default_date IS NOT NULL AND default_date <= cutoff_date
+			THEN 1
+			ELSE 0
+		END
+		AS default_flag
+	FROM base_LTV_table_cutoff_date
+),
+
+base_LTV_cum_payment_principal AS
+(
+	SELECT *,
+
+		SUM(COALESCE(payment_amount,0)) OVER
+		(
+			PARTITION BY loan_id
+			ORDER BY payment_date, payment_amount, paid_principal, paid_fee_interest
+		)
+		AS cum_payment,
+		
+		SUM(COALESCE(paid_principal,0)) OVER
+		(
+			PARTITION BY loan_id
+			ORDER BY payment_date, payment_amount, paid_principal, paid_fee_interest
+		)
+		AS cum_principal,
+		
+		ROW_NUMBER() OVER
+		(
+			PARTITION BY loan_id
+			ORDER BY 	payment_date DESC, 
+			          	COALESCE(payment_amount, 0) DESC,
+                		COALESCE(paid_principal, 0) DESC,
+                		COALESCE(paid_fee_interest, 0) DESC
+		) AS rownum
+		
+	FROM base_LTV_default_flag
+),
+
+base_LTV_trimmed AS
+(
+	SELECT *
+	FROM base_LTV_cum_payment_principal
+	WHERE rownum = 1
+),
+
+base_LTV_outstandings AS
+(
+	SELECT *,
+		(principal - cum_principal) AS outstanding_principal_180d,
+		(
+			CASE
+				WHEN default_flag = 1 THEN (principal - cum_principal) ELSE 0
+			END 
+		) AS loss_180d
+	FROM base_LTV_trimmed
+),
+
+final_LTV AS
+(
+	SELECT 
+		customer_id,
+		SUM(cum_payment) AS total_payment_180d,
+		SUM(loss_180d) AS total_loss_180d,
+		(SUM(cum_payment) - SUM(loss_180d)) AS net_ltv_180d
+	FROM base_LTV_outstandings
+	GROUP BY customer_id
+)
+
+SELECT *
+FROM final_LTV
+ORDER BY net_ltv_180d DESC;

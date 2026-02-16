@@ -1,0 +1,37 @@
+WITH ltv_with_bucket AS
+(
+    SELECT
+        ltv.customer_id,
+        ltv.total_payment_180d,
+        ltv.total_loss_180d,
+        ltv.net_ltv_180d,
+        NTILE(5) OVER
+        (
+            ORDER BY ltv.net_ltv_180d DESC
+        ) AS bucket
+    FROM cica_prime."02_3a_customer_LTV_180d" ltv
+),
+
+bucket_summary AS
+(
+    SELECT
+        bucket,
+        COUNT(*) AS customers_count,
+
+        ROUND(AVG(total_payment_180d), 2) AS avg_total_payment_180d,
+        ROUND(AVG(total_loss_180d), 2) AS avg_total_loss_180d,
+        ROUND(AVG(net_ltv_180d), 2) AS avg_net_ltv_180d,
+
+        ROUND(MIN(net_ltv_180d), 2) AS min_net_ltv_180d,
+        ROUND(MAX(net_ltv_180d), 2) AS max_net_ltv_180d,
+
+        ROUND(SUM(total_payment_180d), 2) AS sum_total_payment_180d,
+        ROUND(SUM(total_loss_180d), 2) AS sum_total_loss_180d,
+        ROUND(SUM(net_ltv_180d), 2) AS sum_net_ltv_180d
+    FROM ltv_with_bucket
+    GROUP BY bucket
+)
+
+SELECT *
+FROM bucket_summary
+ORDER BY bucket;
