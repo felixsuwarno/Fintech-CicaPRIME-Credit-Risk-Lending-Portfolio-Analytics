@@ -1,4 +1,4 @@
-# WIP ( Work in Progress ) Feb 16th 2026
+# WIP ( Work in Progress ) Feb 18th 2026
 
 # Consumer Lending “Cica PRIME” Credit Risk and Portfolio Analytics  
 **Risk Management • Portfolio Analytics • Forecasting • Stress Testing**
@@ -578,13 +578,26 @@ How concentrated is customer value, and how dependent is portfolio performance o
 - **Output the value concentration table:** Return customer-level **net_ltv_180d**, cumulative % of customers (**pareto_x**), and cumulative % of portfolio value (**pareto_y**), ordered from highest to lowest **net_ltv_180d**.
 
 **Python Method**
+- Python is not used to process the data further. It is only used to directly visualize the chart.
 
+<br>
+
+<p align="center">
+  <img src="Charts/02_4_value_concentration_pareto_curve.png" style="width:25%;">
+</p>
+
+**Key Insights**
+**Value is moderately concentrated:** about 60% of customers generate ~80% of total LTV, so the portfolio is not dependent on a tiny elite group. The portfolio is diversified and not fragile.
+
+<br>
+<br>
+
+### 3 — Credit Risk Modeling & Portfolio Loss Dynamics
 
 <br>
 
-<br>
-<br>
-
+**3.1. Probability of default (PD)**
+Which individual loans are most likely to default based on borrower, loan, and early behavior signals?
 
 
 
