@@ -666,6 +666,11 @@ The rules and definition :
 </p>
 
 **Key Insights**
+- Higher risk tiers default more often, which means the risk ranking is working properly.
+- Most loans are in Tier A, so its 4% default rate is statistically reliable.
+- Default rates increase steadily from A to D with no unexpected reversals.
+- Tier D has only 26 loans, so its 8% default rate can change easily with just one additional default.
+- Overall, the model is separating safer borrowers from riskier borrowers as intended.
 
 <br>
 
@@ -674,6 +679,14 @@ The rules and definition :
 </p>
 
 **Key Insights**
+- Default rates fluctuate across months, showing that credit performance changes by cohort.
+- Early 2023 months have very low loan counts, so their high or low PD values are not statistically reliable.
+- Mid-2023 shows a temporary PD spike around 10%, but the loan volumes there are modest.
+- Most 2024 months stay between 3% and 6%, indicating more stable portfolio performance.
+- There is no consistent upward pattern across vintages, suggesting underwriting quality has not steadily worsened.
+
+<br>
+
 
 
 
