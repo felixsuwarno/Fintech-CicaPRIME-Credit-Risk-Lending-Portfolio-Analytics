@@ -1,0 +1,50 @@
+with pd_loans_origination_date AS
+(
+	SELECT 
+		loan_id,
+		customer_id,
+		origination_date,
+		CAST( DATE_TRUNC('month',origination_date) AS date) AS origination_month,
+		default_date
+	FROM loans
+),
+
+pd_join_loans_and_customers AS
+(
+	SELECT
+		l.loan_id,
+		l.customer_id,
+		l.origination_date,
+		l.origination_month,
+		l.default_date,
+		c.risk_tier_at_signup
+	FROM pd_loans_origination_date l
+	LEFT JOIN customers c
+	ON l.customer_id = c.customer_id
+),
+
+pd_is_pd_eligible_and_is_default_12m AS
+(
+	SELECT 
+		*,
+
+		CASE
+			WHEN origination_date <= DATE '2024-12-31' THEN 1 ELSE 0
+		END
+		AS is_pd_eligible,
+
+		CASE
+			WHEN 	default_date IS NOT NULL 
+					AND 
+					default_date <= origination_date + INTERVAL '12 months' 
+			THEN 1 
+			ELSE 0
+		END
+		AS is_default_12m
+		
+	FROM pd_join_loans_and_customers
+)
+
+SELECT *
+FROM pd_is_pd_eligible_and_is_default_12m
+
