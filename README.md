@@ -642,6 +642,8 @@ The rules and definition :
 - loans
 - customers
 
+<br>
+
 **SQL Methods :**
 - **Add origination month label:** Create **origination_month** by truncating **origination_date** to the first day of its month so all loans from the same month group together.
 - **Attach customer risk tier:** Join the loans to the customers table using **customer_id** so each loan carries **risk_tier_at_signup** for risk segmentation.
@@ -649,6 +651,13 @@ The rules and definition :
 - **Flag default within 12 months:** Create **is_default_12m** by marking 1 when **default_date** exists and occurs on or before origination_date + INTERVAL '12 months', otherwise 0.
 - **Final Output:** One row per loan with: **loan_id** , **customer_id** , **origination_date** , **origination_month** , **default_date** , **risk_tier_at_signup** , **is_pd_eligible** , **is_default_12m**
 
+<br>
+
+**Python Methods :**
+- **Keep only “eligible” loans:** Only include loans marked is_pd_eligible = 1, because those loans had enough time to see whether they default within 12 months.
+- **Overall 12M PD:** Count how many eligible loans defaulted within 12 months, then divide by how many eligible loans exist.
+- **PD by risk tier:** Do the same PD calculation separately for each **risk_tier_at_signup** to see if higher-risk tiers actually default more.
+- **PD by origination month (vintage):** Do the same PD calculation separately for each origination_month to see if newer cohorts are getting riskier or safer over time.
 
 
 
