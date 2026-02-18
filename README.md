@@ -659,11 +659,21 @@ The rules and definition :
 - **PD by risk tier:** Do the same PD calculation separately for each **risk_tier_at_signup** to see if higher-risk tiers actually default more.
 - **PD by origination month (vintage):** Do the same PD calculation separately for each origination_month to see if newer cohorts are getting riskier or safer over time.
 
+<br>
 
+<p align="center">
+  <img src="Charts/03_1a_pd_by_risk_tier.png" style="width:25%;">
+</p>
 
+**Key Insights**
 
+<br>
 
+<p align="center">
+  <img src="Charts/03_1b_pd_by_vintage.png" style="width:25%;">
+</p>
 
+**Key Insights**
 
 
 
