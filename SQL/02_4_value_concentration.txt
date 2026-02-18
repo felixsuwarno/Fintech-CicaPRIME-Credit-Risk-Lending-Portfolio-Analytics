@@ -1,0 +1,61 @@
+with col_pareto_x AS
+(
+	SELECT 
+    	customer_id,
+	    total_payment_180d,
+    	total_loss_180d,
+    	net_ltv_180d,
+
+		(	
+			ROUND
+			(
+				ROW_NUMBER() OVER (ORDER BY net_ltv_180d DESC) 
+    			* 100.0 
+    			/ COUNT(*) OVER () 
+				,2
+			)
+		)
+		AS pareto_x
+	FROM "02_3a_customer_LTV_180d"
+	ORDER BY net_ltv_180d DESC
+),
+
+cum_ltv_180d AS
+(
+	SELECT 
+		*,
+		SUM(net_ltv_180d) OVER
+		(
+			ORDER BY net_ltv_180d DESC
+			ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+		) AS cum_ltv_180d
+	FROM col_pareto_x
+),
+
+col_pareto_y AS
+(
+	SELECT *,
+		ROUND
+		(
+			cum_ltv_180d * 100 
+			/
+			SUM(net_ltv_180d) OVER ()
+			,6
+		)	
+		AS pareto_y
+		
+	FROM cum_ltv_180d
+)
+
+SELECT *
+FROM col_pareto_y
+
+
+
+
+
+
+
+
+
+
