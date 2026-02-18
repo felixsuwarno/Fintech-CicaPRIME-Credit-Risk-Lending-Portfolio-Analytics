@@ -572,9 +572,15 @@ How concentrated is customer value, and how dependent is portfolio performance o
 **Tables used**
 02_3a_customer_LTV_180d.csv, generated for business question 2.3.
 
-- **Rank customers from highest value to lowest value:** Sort customers by net_ltv_180d in descending order, assign each a rank, divide the rank by total customers and multiply by 100 to produce the cumulative percentage of customers, which becomes the X-axis of the Pareto curve.
-- **Build a running total of value:** Starting from the highest-value customer, add net_ltv_180d row by row down the ranked list to create a cumulative total showing how portfolio value builds across customers.
-- **Convert cumulative value into percentage of total portfolio value:** Divide the cumulative total by total portfolio net_ltv_180d and multiply by 100 to calculate the cumulative percentage of value, which becomes the Y-axis of the Pareto curve.
+- **Rank customers from highest value to lowest value:** Sort customers by **net_ltv_180d** in descending order, assign each a rank, divide the rank by total customers and multiply by 100 to produce the cumulative percentage of customers, which becomes the X-axis of the Pareto curve.
+- **Build a running total of value:** Starting from the highest-value customer, add **net_ltv_180d** row by row down the ranked list to create a cumulative total showing how portfolio value builds across customers.
+- **Convert cumulative value into percentage of total portfolio value:** Divide the cumulative total by total portfolio **net_ltv_180d** and multiply by 100 to calculate the cumulative percentage of value, which becomes the Y-axis of the Pareto curve.
+- **Output the value concentration table:** Return customer-level **net_ltv_180d**, cumulative % of customers (**pareto_x**), and cumulative % of portfolio value (**pareto_y**), ordered from highest to lowest **net_ltv_180d**.
+
+**Python Method**
+
+
+<br>
 
 <br>
 <br>
