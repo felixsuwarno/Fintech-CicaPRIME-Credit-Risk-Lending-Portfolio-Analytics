@@ -688,7 +688,7 @@ The rules and definition :
 <br>
 <br>
 
-**3.1. Exposure at default (EAD)** 
+**3.1. Exposure at default (EAD)**  
 How much exposure remains outstanding at the time loans default?
 
 The rules and definition :
