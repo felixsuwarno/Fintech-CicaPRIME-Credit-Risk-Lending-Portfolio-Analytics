@@ -1,0 +1,128 @@
+WITH ead_loans_origination_month AS
+(
+    SELECT 
+        loan_id,
+        customer_id,
+        origination_date,
+        CAST(DATE_TRUNC('month', origination_date) AS date) AS origination_month,
+        default_date,
+        principal
+    FROM loans
+	WHERE default_date IS NOT NULL 
+	-- we only care of loans that defaulted
+),
+
+ead_loans_joins_customers AS
+(
+    SELECT
+        l.loan_id,
+        l.customer_id,
+        l.origination_date,
+        l.origination_month,
+        l.default_date,
+        l.principal,
+        c.risk_tier_at_signup
+    FROM ead_loans_origination_month l
+    LEFT JOIN customers c
+        ON l.customer_id = c.customer_id
+),
+
+ead_loans_joins_payments AS
+(
+    SELECT
+        lc.customer_id,
+ 		lc.loan_id,
+        lc.origination_date,
+        lc.origination_month,
+        lc.default_date,
+        lc.principal,
+        lc.risk_tier_at_signup,
+        p.payment_date,
+        p.paid_principal
+    FROM ead_loans_joins_customers lc
+    LEFT JOIN payments p
+        ON lc.loan_id = p.loan_id
+	ORDER BY lc.customer_id, lc.loan_id
+),
+
+ead_principal_paid_on_default AS
+(
+    SELECT
+        loan_id,
+
+        SUM
+	(
+            CASE
+                WHEN 	payment_date <= default_date
+                THEN 	COALESCE(paid_principal, 0)
+                ELSE 	0
+            END
+        ) AS principal_paid_on_default
+
+    FROM ead_loans_joins_payments
+    GROUP BY loan_id
+),
+
+ead_base AS
+(
+    SELECT
+        loan_id,
+        customer_id,
+        origination_date,
+        origination_month,
+        default_date,
+        principal,
+        risk_tier_at_signup
+
+    FROM ead_loans_joins_customers
+),
+
+ead_join_principal AS
+(
+    SELECT
+        b.loan_id,
+        b.customer_id,
+        b.origination_date,
+        b.origination_month,
+        b.default_date,
+        b.risk_tier_at_signup,
+        b.principal,
+        COALESCE(pp.principal_paid_on_default, 0) AS principal_paid_on_default
+    FROM ead_base b
+    LEFT JOIN ead_principal_paid_on_default pp
+        ON b.loan_id = pp.loan_id
+),
+
+ead_principal_unpaid_on_default AS
+(
+    SELECT
+        customer_id,
+		loan_id,
+        origination_date,
+        origination_month,
+        default_date,
+        risk_tier_at_signup,
+        principal,
+        principal_paid_on_default,
+        GREATEST
+		(
+            principal - principal_paid_on_default,
+            0
+        ) AS principal_unpaid_on_default
+    FROM ead_join_principal
+	ORDER BY customer_id,loan_id
+),
+
+ead_final AS
+(
+	SELECT * 
+	FROM ead_principal_unpaid_on_default
+	ORDER BY customer_id, loan_id
+)
+
+SELECT *
+FROM ead_final
+
+
+
+
