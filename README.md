@@ -691,6 +691,8 @@ The rules and definition :
 **3.2. Exposure at default (EAD)**  
 How much exposure remains outstanding at the time loans default?
 
+The fully observable window in this dataset is between 2023 to 2024 dataset, so the calculations we make for this business question reflects that.
+
 <br>
 
 The rules and definition :
