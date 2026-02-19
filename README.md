@@ -758,9 +758,13 @@ The following elements are not included in EAD:
 
 <br>
 
+<p align="center">
+  <img src="Charts/03_2a_ead_by_risk_tier.png" style="width:100%;">
+</p
 
-
-
+<p align="center">
+  <img src="Charts/03_2b_ead_by_vintage.png" style="width:100%;">
+</p
 
 
 
