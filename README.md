@@ -1,4 +1,4 @@
-# WIP ( Work in Progress ) Feb 18th 2026
+# WIP ( Work in Progress ) Feb 20th 2026
 
 # Consumer Lending “Cica PRIME” Credit Risk and Portfolio Analytics  
 **Risk Management • Portfolio Analytics • Forecasting • Stress Testing**
@@ -825,8 +825,48 @@ The rules and definition :
   - Non-defaulted loans are excluded because no loss event occurred.
   - A customer with multiple defaulted loans contributes multiple LGD observations.
 
+<br>
 
+**SQL Methods :**
+- **Prepare principal payment data:** Select **loan_id**, **payment_date**, and **paid_principal** from the **payments** table so only the fields required for recovery measurement are carried forward.
+- **Attach payments to defaulted exposures:** Left join the EAD table to the prepared payments table on **loan_id** so each defaulted loan is aligned with all its payment records.
+- **Identify post-default recoveries:** Keep only rows where **payment_date** is strictly after **default_date**, while preserving **NULL** payment rows so loans with zero recovery remain in the dataset.
+- **Aggregate recoveries to loan level:** Group by **loan_id** and sum **paid_principal** to compute **recovered_principal_after_default** so each defaulted loan has one consolidated recovery value.
+- **Calculate loan-level principal loss:** Subtract **recovered_principal_after_default** from **principal_unpaid_on_default** and apply GREATEST(..., 0) to floor negative values at zero so recoveries cannot create artificial gains.
+- **Compute loan-level LGD rate:** Divide **principal_loss** by **principal_unpaid_on_default** and round to two decimals so each loan has a percentage loss measure; exclude loans where **principal_unpaid_on_default** equals zero to prevent invalid ratios.
+- **Order final LGD output by vintage:** Sort the result by **year_month** so the dataset is ready for vintage-level aggregation and reporting.
+- **Output the LGD table:** Return **loan_id**, **year_month**, **risk_tier_at_signup**, **principal_unpaid_on_default**, **recovered_principal_after_default**, **principal_loss**, and **lgd_rate** ordered by year_month so each row represents one defaulted loan with its realized loss profile.
 
+<br>
 
+**Python Methods :**
+- **Load the LGD dataset:** and then parse the vintage date column, convert **origination_month** to a datetime type so monthly grouping and sorting work correctly.
+- **Summarize LGD by risk tier:** Group by **risk_tier_at_signup** and compute total **principal_loss** divided by total **principal_unpaid_on_default** so the result is exposure-weighted LGD per tier, and include a **defaulted_loan_count** to show how many loans drive each tier result.
+- **Summarize LGD by vintage:** Group by **origination_month** and compute total principal_loss divided by total **principal_unpaid_on_default** so the result is exposure-weighted LGD per month, and include a **defaulted_loan_count** to show how many loans drive each month result.
 
+<br>
+
+<p align="center">
+  <img src="Charts/03_3a_lgd_by_risk_tier.png" style="width:100%;">
+</p
+
+**Key Insights**
+- Tier C has the highest LGD, which means when C loans default, the bank loses the biggest share of the unpaid money.
+- Tier D is also very high, but it is based on only 4 loans, so the result is unstable and can easily move.
+- Tier A and Tier B have similar LGD levels, both just under 80%, meaning the bank still loses most of the money when these loans default.
+- Tier A has the largest number of defaults (112 loans), so its LGD result is the most reliable and matters the most for total portfolio loss.
+- Overall, all tiers show high LGD, which means recoveries after default are generally low across the portfolio.
+
+<br>
+
+<p align="center">
+  <img src="Charts/03_3b_lgd_by_vintage.png" style="width:100%;">
+</p
+
+**Key Insights**
+- LGD jumps around a lot in early months because some months only have 1 or 2 defaulted loans, so one loan can move the result a lot.
+- November 2023 looks unusually low (around mid-40%), but it is based on only 2 loans, so it is not stable.
+- From 2024 onward, when the number of defaults per month increases, LGD mostly stays between about 75% and 85%, which is more consistent.
+- Many 2025 months have higher default counts (10+ loans), so those LGD numbers are more reliable than the early months.
+- Overall, the pattern shows that when loans default, the bank usually loses around 80% of the unpaid principal, meaning recoveries are generally small.
 
