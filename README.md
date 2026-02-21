@@ -937,3 +937,12 @@ A cumulative loss table shows, for each group of loans that started in the same 
 <p align="center">
   <img src="Charts/03_4b_cumulative_loss_rate.png" style="width:100%;">
 </p
+
+**Key Insights :**
+- Loss rates start high in early 2023 (~5%), fall mid-year, then rise again by late 2023.
+- December 2023 and April 2024 show the highest spikes (around 4–5%), marking weaker vintages.
+- Mid-2024 vintages improve materially (around 1–2%), indicating stronger credit quality.
+- Late 2024 loss rates increase again (~3%), suggesting risk rises alongside higher origination volumes.
+- Overall: Portfolio loss performance is volatile across vintages, not stable.
+
+
