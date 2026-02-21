@@ -1,0 +1,79 @@
+WITH clt_origination_month AS
+(
+    SELECT 
+        loan_id,
+        customer_id,
+        CAST(DATE_TRUNC('month', origination_date) AS DATE) AS origination_month,
+        default_month
+    FROM loans
+    WHERE origination_date < DATE '2025-01-01'
+),
+
+clt_principal_unpaid_on_default AS
+(
+    SELECT
+        l.loan_id,
+        l.customer_id,
+        l.origination_month,
+        l.default_month,
+        ead.principal_unpaid_on_default
+    FROM clt_origination_month l
+    LEFT JOIN "03_2_exposure_at_default" ead
+        ON l.loan_id = ead.loan_id
+),
+
+clt_mob12 AS
+(
+    SELECT
+        loan_id,
+        customer_id,
+        origination_month,
+        default_month,
+        principal_unpaid_on_default,
+        CAST(origination_month + INTERVAL '12 months' AS DATE) AS mob12
+    FROM clt_principal_unpaid_on_default
+),
+
+clt_loss_12m AS
+(
+    SELECT
+        loan_id,
+        customer_id,
+        origination_month,
+        default_month,
+        principal_unpaid_on_default,
+        mob12,
+        CASE
+            WHEN default_month IS NOT NULL
+                 AND default_month <= mob12
+            THEN principal_unpaid_on_default
+            ELSE 0
+        END AS loss_12m
+    FROM clt_mob12
+    ORDER BY loan_id
+),
+
+clt_counter AS
+(
+    SELECT 
+        origination_month,
+        COUNT(loan_id) AS n_loans_in_vintage,
+        SUM(loss_12m)  AS total_loss_12m
+    FROM clt_loss_12m
+    GROUP BY origination_month
+    ORDER BY origination_month
+),
+
+clt_clr_12m AS
+(
+    SELECT
+        origination_month,
+        n_loans_in_vintage,
+        total_loss_12m,
+        ROUND(total_loss_12m * 1.0 / n_loans_in_vintage, 2) AS clr_12m
+    FROM clt_counter
+    ORDER BY origination_month
+)
+
+SELECT *
+FROM clt_clr_12m;

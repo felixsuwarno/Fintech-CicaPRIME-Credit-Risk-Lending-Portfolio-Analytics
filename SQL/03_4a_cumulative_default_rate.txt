@@ -1,0 +1,72 @@
+WITH loans_prep AS
+(
+	SELECT 
+		loan_id,
+		customer_id,
+		CAST(DATE_TRUNC('month', origination_date) AS DATE) AS origination_month,
+		default_month
+	FROM loans
+	WHERE origination_date >= DATE '2023-01-01'
+		AND origination_date <  DATE '2025-01-01'
+),
+cdt_mob12 AS
+(
+	SELECT
+		loan_id,
+		customer_id,
+		origination_month,
+		default_month,
+		CAST(origination_month + INTERVAL '12 months' AS DATE) AS mob12
+	FROM loans_prep
+),
+
+cdt_is_default_12m AS
+(
+	SELECT
+		loan_id,
+		customer_id,
+		origination_month,
+		default_month,
+		mob12,
+		CASE
+			WHEN default_month IS NOT NULL
+				AND default_month <= mob12
+			THEN 1
+			ELSE 0
+		END AS is_default_12m
+	FROM cdt_mob12
+	ORDER BY loan_id
+),
+
+cdt_counts AS
+(
+	SELECT 
+		origination_month,
+		
+		COUNT(loan_id) 		AS n_loans_in_vintage ,
+		SUM(is_default_12m)	AS n_default_12m_loans 
+		
+	FROM cdt_is_default_12m
+	GROUP BY origination_month
+	ORDER BY origination_month
+),
+
+-- cdr_12m is cumulative default rate in 12 months
+cdt_cdr_12m AS
+(
+	SELECT *,
+		ROUND( n_default_12m_loans * 100.0 / n_loans_in_vintage ,2)
+		AS cdr_12m
+	FROM cdt_counts
+	ORDER BY origination_month
+)
+
+
+SELECT *
+FROM cdt_cdr_12m;
+
+
+
+
+
+
