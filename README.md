@@ -885,11 +885,10 @@ For the purpose of answering this business question, there will be three separat
    
 <br> 
 
-**3.4A. Cumulative Default Table**  
+**3.4A. Cumulative Default Rate Table**  
 A cumulative default table shows, for each group of loans that started in the same month, what percentage of those loans have defaulted by a specific point in time, such as 12 months after they began. It measures how many loans have failed out of the original group and expresses that as a rate, so we can compare how different groups performed over the same time period.
 
 **SQL Methods :**
-
 - **Pick the loans we are allowed to measure:** Filter loans to origination dates in 2023–2024 only, and keep one row per loan with **loan_id**, **origination_month**, and **default_month** so each loan has a start month and a possible default date.
 - **Set the 12-month check date:** Add mob12 as **origination_month** + INTERVAL '12 months' so each loan has a clear “first birthday” date when we check if it failed.
 - **Mark whether the loan failed in its first year:** Create **is_default_12m** equal to 1 if **default_month** is not NULL and **default_month** <= **mob12**, otherwise 0.
@@ -902,7 +901,16 @@ A cumulative default table shows, for each group of loans that started in the sa
 **Python Methods :**
 - Python is used to visualize the chart, no further processing is necessary.
 
+<br>
 
+<p align="center">
+  <img src="Charts/03_4a_cumulative_default_rate.png" style="width:100%;">
+</p
+
+<br> 
+
+**3.4B. Cumulative Loss Rate Table**  
+A cumulative loss table shows, for each group of loans that started in the same month, how much money was lost from those loans by a specific point in time, such as 12 months after they began. It measures the total unpaid balance from loans that defaulted within that period and expresses it relative to the original group, so we can compare how severe the losses were across different vintages over the same time horizon.
 
 **SQL Methods :**
 - **Pick the loans we are allowed to measure:** Filter loans to origination dates in 2023–2024 only, and keep one row per loan with **loan_id**, **origination_month**, and **default_month** so each loan has a start month and a possible default date.
