@@ -907,6 +907,13 @@ A cumulative default table shows, for each group of loans that started in the sa
   <img src="Charts/03_4a_cumulative_default_rate.png" style="width:100%;">
 </p
 
+**Key Insights :**
+- Loan volume increased steadily through 2024, showing strong portfolio growth.
+- Default rates were volatile in 2023, with several sharp spikes near 9–10%, indicating inconsistent risk quality early on.
+- Most 2024 vintages show moderate default rates (around 3–6%), suggesting more stable underwriting during the growth phase.
+- April 2024 stands out with a high default rate despite rising volume, signaling a temporary risk deterioration.
+- Late 2024 combines high loan volume with controlled default rates, indicating growth without a clear structural increase in risk.
+
 <br> 
 
 **3.4B. Cumulative Loss Rate Table**  
